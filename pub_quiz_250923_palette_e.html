@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Trivia - Palette E</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fef6e4; /* Light cream background */
+      color: #001858; /* Deep navy text */
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #001858; /* Match main text color */
+    }
+    .round {
+      margin: 30px 0;
+    }
+    .card {
+      background-color: #f3d2c1; /* Warm pastel peach */
+      border: 2px solid #8bd3dd; /* Soft teal border */
+      color: #001858;
+      width: 250px;
+      height: 150px;
+      display: inline-block;
+      margin: 10px;
+      perspective: 1000px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      border-radius: 10px;
+    }
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+    .card-front,
+    .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .card-front {
+      background-color: #f3d2c1; /* Peach */
+      color: #001858;
+    }
+    .card-back {
+      background-color: #8bd3dd; /* Teal */
+      color: #001858;
+      transform: rotateY(180deg);
+    }
+  </style>
+</head>
+<body>
+  <h1>Daily Trivia - Palette E</h1>
+  <div id="trivia-container"></div>
+
+  <script>
+    const triviaData = [
+      { round: "Current World Events", q: "Who is the current Secretary-General of the United Nations?", a: "António Guterres" },
+      { round: "Current World Events", q: "Which country recently hosted the G20 summit?", a: "India" },
+      { round: "Current World Events", q: "What major conflict escalated in Eastern Europe in 2022?", a: "Russia-Ukraine war" },
+      { round: "Current World Events", q: "Who won the 2024 US Presidential Election?", a: "Joe Biden" },
+      { round: "Current World Events", q: "Which tech company launched the Vision Pro headset in 2023?", a: "Apple" },
+      { round: "Current World Events", q: "Which city hosted the 2024 Summer Olympics?", a: "Paris" },
+      { round: "Current World Events", q: "What global issue did COP28 focus on?", a: "Climate Change" },
+      { round: "Current World Events", q: "Which country landed the Chandrayaan-3 mission on the Moon?", a: "India" },
+      { round: "Current World Events", q: "Which AI model by OpenAI launched in 2023?", a: "GPT-4" },
+      { round: "Current World Events", q: "Who is the current UK Prime Minister?", a: "Keir Starmer" },
+
+      { round: "Pop Culture", q: "Which movie won Best Picture at the 2023 Academy Awards?", a: "Everything Everywhere All At Once" },
+      { round: "Pop Culture", q: "Who headlined the 2024 Super Bowl halftime show?", a: "Usher" },
+      { round: "Pop Culture", q: "Which artist released the album 'Renaissance' in 2022?", a: "Beyoncé" },
+      { round: "Pop Culture", q: "Which animated film won Disney its first Oscar for Best Animated Feature?", a: "Frozen (2013)" },
+      { round: "Pop Culture", q: "What Netflix show became the most-watched of all time in 2021?", a: "Squid Game" },
+      { round: "Pop Culture", q: "Which singer starred in the 2018 remake of 'A Star Is Born'?", a: "Lady Gaga" },
+      { round: "Pop Culture", q: "Who plays Spider-Man in the MCU?", a: "Tom Holland" },
+      { round: "Pop Culture", q: "Which rapper released 'To Pimp a Butterfly'?", a: "Kendrick Lamar" },
+      { round: "Pop Culture", q: "What year did Michael Jackson release 'Thriller'?", a: "1982" },
+      { round: "Pop Culture", q: "Which film franchise features the character Jack Sparrow?", a: "Pirates of the Caribbean" },
+
+      { round: "Music Research Round", q: "Which band released the album 'Abbey Road'?", a: "The Beatles" },
+      { round: "Music Research Round", q: "Who composed 'The Four Seasons'?", a: "Antonio Vivaldi" },
+      { round: "Music Research Round", q: "What is Beyoncé’s alter ego?", a: "Sasha Fierce" },
+      { round: "Music Research Round", q: "Which classical composer became deaf later in life?", a: "Ludwig van Beethoven" },
+      { round: "Music Research Round", q: "Who is known as the 'Queen of Pop'?", a: "Madonna" },
+      { round: "Music Research Round", q: "Which singer released 'Shape of You'?", a: "Ed Sheeran" },
+      { round: "Music Research Round", q: "What genre is Metallica primarily associated with?", a: "Heavy Metal" },
+      { round: "Music Research Round", q: "Who wrote the opera 'Carmen'?", a: "Georges Bizet" },
+      { round: "Music Research Round", q: "Which artist is nicknamed 'The Boss'?", a: "Bruce Springsteen" },
+      { round: "Music Research Round", q: "Which band released 'Dark Side of the Moon'?", a: "Pink Floyd" },
+
+      { round: "Jeopardy!-style", q: "This U.S. state is known as the 'Sunshine State'.", a: "Florida" },
+      { round: "Jeopardy!-style", q: "He was the first President of the United States.", a: "George Washington" },
+      { round: "Jeopardy!-style", q: "This planet is the largest in our Solar System.", a: "Jupiter" },
+      { round: "Jeopardy!-style", q: "This company created the iPhone.", a: "Apple" },
+      { round: "Jeopardy!-style", q: "This author wrote 'Romeo and Juliet'.", a: "William Shakespeare" },
+      { round: "Jeopardy!-style", q: "This element has the chemical symbol O.", a: "Oxygen" },
+      { round: "Jeopardy!-style", q: "This country is home to the Great Barrier Reef.", a: "Australia" },
+      { round: "Jeopardy!-style", q: "This U.S. holiday is celebrated on the fourth Thursday of November.", a: "Thanksgiving" },
+      { round: "Jeopardy!-style", q: "This fast food chain’s mascot is a clown named Ronald.", a: "McDonald's" },
+      { round: "Jeopardy!-style", q: "This musical instrument has black and white keys.", a: "Piano" },
+
+      { round: "Important History", q: "Who was the first man to step on the Moon?", a: "Neil Armstrong" },
+      { round: "Important History", q: "Which war ended with the Treaty of Versailles?", a: "World War I" },
+      { round: "Important History", q: "Who was the first Emperor of Rome?", a: "Augustus" },
+      { round: "Important History", q: "What year did the Berlin Wall fall?", a: "1989" },
+      { round: "Important History", q: "Who was the British Prime Minister during WWII?", a: "Winston Churchill" },
+      { round: "Important History", q: "What ancient civilization built the pyramids?", a: "Egyptians" },
+      { round: "Important History", q: "Who was the first female Prime Minister of the UK?", a: "Margaret Thatcher" },
+      { round: "Important History", q: "Which empire was ruled by Genghis Khan?", a: "Mongol Empire" },
+      { round: "Important History", q: "In which year did the American Civil War begin?", a: "1861" },
+      { round: "Important History", q: "Who wrote the Declaration of Independence?", a: "Thomas Jefferson" },
+    ];
+
+    const container = document.getElementById("trivia-container");
+
+    const grouped = triviaData.reduce((acc, item) => {
+      acc[item.round] = acc[item.round] || [];
+      acc[item.round].push(item);
+      return acc;
+    }, {});
+
+    Object.keys(grouped).forEach(round => {
+      const roundDiv = document.createElement("div");
+      roundDiv.className = "round";
+      const header = document.createElement("h2");
+      header.textContent = round;
+      roundDiv.appendChild(header);
+
+      grouped[round].forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+        const inner = document.createElement("div");
+        inner.className = "card-inner";
+
+        const front = document.createElement("div");
+        front.className = "card-front";
+        front.textContent = item.q;
+
+        const back = document.createElement("div");
+        back.className = "card-back";
+        back.textContent = item.a;
+
+        inner.appendChild(front);
+        inner.appendChild(back);
+        card.appendChild(inner);
+        card.addEventListener("click", () => {
+          card.classList.toggle("flipped");
+        });
+
+        roundDiv.appendChild(card);
+      });
+
+      container.appendChild(roundDiv);
+    });
+  </script>
+</body>
+</html>

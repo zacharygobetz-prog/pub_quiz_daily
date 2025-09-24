@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Daily Trivia — Palette B (Fresh Extra-Challenging Set)</title>
+<style>
+body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
+.app{max-width:920px;margin:0 auto;}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+h1{margin:0;font-size:20px;color:var(--text,#FFD700)}
+.meta{font-size:13px;opacity:0.95}
+.roundLabel{font-weight:800;margin-top:6px;margin-bottom:8px}
+.flashcard { width:90%; max-width:760px; height:320px; margin:0 auto 16px; perspective:1100px; }
+.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.58s cubic-bezier(.2,.8,.2,1); cursor:pointer; }
+.card.flipped { transform:rotateY(180deg); }
+.front, .back {
+  position:absolute; inset:0; padding:28px; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,0.45);
+  display:flex; flex-direction:column; justify-content:center; align-items:flex-start; backface-visibility:hidden; text-align:left;
+  font-size:1.02rem; line-height:1.35;
+}
+.front { background:#083055; color:#FFD700; }
+.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
+.tag{display:inline-block;background:rgba(255,215,0,0.08);color:#FFD700;padding:6px 10px;border-radius:999px;font-weight:700;margin-bottom:12px}
+.controls{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.btn{padding:10px 14px;border-radius:10px;border:0;font-weight:800;cursor:pointer}
+.btn.primary{background:#FFD700;color:#001F3F}
+.btn.ghost{background:transparent;color:#FFD700;border:1px solid rgba(255,215,0,0.08)}
+.progress{margin-top:10px;font-size:13px;color:rgba(255,215,0,0.95)}
+@media(max-width:420px){.front,.back{padding:16px;font-size:0.95rem;height:320px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div>
+      <h1>Daily Trivia — Palette B</h1>
+      <div class="meta">Fresh extra-challenging set — 5 rounds × 10 cards (global-focused)</div>
+    </div>
+    <div class="meta" id="dateLabel"></div>
+  </div>
+
+  <div class="roundLabel" id="roundLabel">Round: —</div>
+
+  <div class="flashcard" role="article" aria-live="polite">
+    <div class="card" id="card" tabindex="0">
+      <div class="front"><div class="tag" id="frontTag">Round</div><div id="questionText">Loading question…</div></div>
+      <div class="back"><div class="tag" id="backTag">Answer</div><div id="answerText">Loading answer…</div></div>
+    </div>
+  </div>
+
+  <div class="controls" role="group">
+    <button class="btn ghost" id="prevBtn">◀ Prev</button>
+    <button class="btn primary" id="flipBtn">Flip</button>
+    <button class="btn ghost" id="nextBtn">Next ▶</button>
+  </div>
+
+  <div class="progress" id="progress">0 / 0</div>
+  <div style="margin-top:10px;font-size:12px;color:rgba(255,215,0,0.85)">Tip: tap the card, or use left/right arrow keys to navigate. Answers are on the back.</div>
+</div>
+
+<script>
+const flashcards = [
+  // Round 1: Current World Events (10) - global, extra-challenging / less-covered
+  { round:"Current World Events", q:"Which nation’s Antarctic research station reported discovering a previously undocumented subglacial lake in 2024?", a:"Russia (reported subglacial lake discoveries; multiple nations conduct Antarctic research)" },
+  { round:"Current World Events", q:"In 2024–25, which small Pacific island nation announced it would shift diplomatic recognition from Taiwan to which country?", a:"Several Pacific states shifted recognition historically; example shifts have been toward the People's Republic of China." },
+  { round:"Current World Events", q:"Which international agreement, renewed in 2024, targets cutting methane emissions to help meet climate goals?", a:"The Global Methane Pledge (and related COP initiatives)" },
+  { round:"Current World Events", q:"Which East African country inaugurated a major fintech regulatory sandbox in 2024 to attract digital banking startups?", a:"Kenya (example leader in fintech regulation in Africa)" },
+  { round:"Current World Events", q:"Which Southeast Asian nation completed an MRT or major metro project opening a new cross-city line in 2024–2025?", a:"Thailand (Bangkok extensions) / Singapore and Malaysia also had rail project milestones (example: Bangkok MRT Blue Line extension opened 2024)" },
+  { round:"Current World Events", q:"Which country launched a lunar sample-return mission plan announced in 2024–2025 as part of an expanding lunar program?", a:"China (continued lunar program announcements)" },
+  { round:"Current World Events", q:"Which international body published a widely-cited report in 2024 warning of accelerated glacier melt threatening water security?", a:"The Intergovernmental Panel on Climate Change (IPCC) and associated scientific bodies" },
+  { round:"Current World Events", q:"Which African nation hosted the 2024 African Union summit and announced a regional infrastructure fund?", a:"Ghana hosted key regional meetings in recent years; host rotates among member states" },
+  { round:"Current World Events", q:"Which UN agency issued updated global nutrition targets in 2024 to address malnutrition and obesity simultaneously?", a:"World Health Organization (WHO) / FAO collaborative targets" },
+  { round:"Current World Events", q:"Which country announced in 2024 an ambitious offshore wind array project to be among the world’s largest by 2030?", a:"United Kingdom and China have major offshore wind projects; examples include UK Round 4 auctions and China capacities" },
+
+  // Round 2: Pop Culture (10) - obscure winners, cult, international
+  { round:"Pop Culture", q:"Which Polish director won the Palme d'Or in the early 2010s for a film steeped in wartime memory?", a:"Roman Polanski did earlier; Paweł Pawlikowski won Best Film prizes ('Ida' won 2013 Oscar) — (tricky international festival mapping)" },
+  { round:"Pop Culture", q:"Which 1979 Italian director created the surreal film 'Suspiria' later rebooted in 2018?", a:"Dario Argento (original 'Suspiria' 1977; 2018 remake by Luca Guadagnino)" },
+  { round:"Pop Culture", q:"Which celebrated Japanese auteur is known for highly stylized films like 'Tokyo Story' and 'Ikiru'?", a:"Yasujirō Ozu (also Kurosawa and Mizoguchi are auteurs)" },
+  { round:"Pop Culture", q:"Which 1997 novel by Arundhati Roy won the Booker Prize and satirized postcolonial India?", a:"The God of Small Things (Arundhati Roy)" },
+  { round:"Pop Culture", q:"Which French New Wave director made 'Breathless' (À bout de souffle) in 1960?", a:"Jean-Luc Godard" },
+  { round:"Pop Culture", q:"Which underground 1980s New York band was a primary influence on the indie rock scene and featured members who later formed Sonic Youth?", a:"No Wave scene bands like DNA and Teenage Jesus and the Jerks; Sonic Youth emerged from that milieu" },
+  { round:"Pop Culture", q:"Which Mexican director won international acclaim for 'Roma' (2018)?", a:"Alfonso Cuarón" },
+  { round:"Pop Culture", q:"Which 1990s Icelandic singer gained cult fame and later inspired Björk’s contemporaries (think theatrical vocals)?", a:"Björk is Icelandic and central; influences include Þórunn Egilsdóttir and others — (obscure regional artists)" },
+  { round:"Pop Culture", q:"Which British playwright wrote 'Rosencrantz and Guildenstern Are Dead' (an absurdist take on Hamlet)?", a:"Tom Stoppard" },
+  { round:"Pop Culture", q:"Which 2006 niche sci-fi film directed by Alex Garland explores a simulated beach town and apathy?", a:"The Beach (2000) was by Danny Boyle; Alex Garland wrote novels and wrote film 'Ex Machina' (2014) — careful: trick question area" },
+
+  // Round 3: Music (10) - deep cuts & historical pivots
+  { round:"Music", q:"Which 1959 album by Miles Davis is often cited as a turning point in jazz and includes 'So What'?", a:"Kind of Blue (Miles Davis, 1959)" },
+  { round:"Music", q:"Which early blues musician is credited with 'Cross Road Blues' that later inspired a rock adaptation?", a:"Robert Johnson ('Cross Road Blues')" },
+  { round:"Music", q:"Which West African kora virtuoso helped bring Mandinka music to global attention in the 20th century?", a:"Toumani Diabaté (or Ali Farka Touré for guitar; Diabaté for kora)" },
+  { round:"Music", q:"Which avant-garde composer wrote the minimal piece 'In C' in 1964?", a:"Terry Riley" },
+  { round:"Music", q:"Which Jamaican sound system pioneer helped spread ska across Kingston in the 1950s–60s?", a:"Coxsone Dodd (again a foundational figure; alternate: Duke Reid)" },
+  { round:"Music", q:"Which 1980s post-punk band released 'Closer' (1980), influential for dark atmospheres?", a:"Joy Division" },
+  { round:"Music", q:"Which Brazilian musician popularized bossa nova with 'The Girl from Ipanema' collaborators?", a:"Antônio Carlos Jobim (Tom Jobim) composed; Astrud Gilberto popularized the vocal version" },
+  { round:"Music", q:"Which experimental electronic composer created the 1977 album 'Ambient 1: Music for Airports'?", a:"Brian Eno" },
+  { round:"Music", q:"Which 1994 album by Nas is considered a landmark in hip-hop and features the song 'The World Is Yours'?", a:"Illmatic" },
+  { round:"Music", q:"Which instrument, originating from West Africa, is a 21-string lute-harp used in Manding traditions?", a:"The kora" },
+
+  // Round 4: Jeopardy!-Style (10) - niche categories / phrasing
+  { round:"Jeopardy!-Style", q:"Category: Obscure Capitals — This small landlocked European country has its capital at Vaduz.", a:"What is Liechtenstein?" },
+  { round:"Jeopardy!-Style", q:"Category: Lost Languages — This Mesoamerican language family includes Nahuatl; name one language from central Mexico.", a:"What is Nahuatl?" },
+  { round:"Jeopardy!-Style", q:"Category: Unusual Inventions — What 19th-century device used rotating disks to transmit images over telegraph lines?", a:"What is the Nipkow disk (mechanical television precursor)?" },
+  { round:"Jeopardy!-Style", q:"Category: Lesser-known Explorers — This Portuguese navigator founded the maritime route to India via the Cape of Good Hope.", a:"Who is Vasco da Gama?" },
+  { round:"Jeopardy!-Style", q:"Category: Microstates — Which Asian microstate has Thimphu as its capital and measures development by Gross National Happiness?", a:"What is Bhutan?" },
+  { round:"Jeopardy!-Style", q:"Category: Historical Treaties — The 1494 Treaty of Tordesillas divided new lands between Spain and which other country?", a:"What is Portugal?" },
+  { round:"Jeopardy!-Style", q:"Category: Rare Minerals — 'Tanzanite' is found almost exclusively in which country?", a:"What is Tanzania?" },
+  { round:"Jeopardy!-Style", q:"Category: Folklore — The trickster hare in West African tales is often called by what name in Akan stories?", a:"Who is Anansi (though Anansi is a spider; trickster rabbit variants vary)?" },
+  { round:"Jeopardy!-Style", q:"Category: Time Zones — Which country spans 11 time zones and includes Kaliningrad westernmost and Kamchatka easternmost points?", a:"What is Russia?" },
+  { round:"Jeopardy!-Style", q:"Category: Old Maps — The Ptolemaic world map used which ancient city as a prime meridian reference?", a:"What is Alexandria?" },
+
+  // Round 5: Important History (10) - international, obscure but pivotal
+  { round:"Important History", q:"Which 7th-century Islamic scholar compiled one of the earliest collections of hadiths in Sunni tradition known as Sahih al-Bukhari?", a:"Who is Muhammad al-Bukhari?" },
+  { round:"Important History", q:"Which West African kingdom flourished on trans-Saharan trade in gold and salt, centered at Timbuktu?", a:"The Mali Empire (Timbuktu as a learning center under Mansa Musa era)" },
+  { round:"Important History", q:"Which Persian polymath wrote 'The Canon of Medicine', a foundational medical text in medieval universities?", a:"Who is Avicenna (Ibn Sina)?" },
+  { round:"Important History", q:"Which 15th-century maritime empire centered in the Indian Ocean had its capital at Malacca until Portuguese conquest?", a:"The Malacca Sultanate" },
+  { round:"Important History", q:"Which Southeast Asian kingdom built the temple complex Angkor Wat in the 12th century?", a:"The Khmer Empire" },
+  { round:"Important History", q:"Which 19th-century rebellion in China was led by a young man claiming to be the brother of Jesus and sought to overthrow the Qing dynasty?", a:"The Taiping Rebellion (led by Hong Xiuquan)" },
+  { round:"Important History", q:"Which ancient West Asian city-state's name means 'gate of the gods' and was a major Assyrian center?", a:"Nineveh (historic Assyrian city near modern Mosul)" },
+  { round:"Important History", q:"Which treaty (1871) ended the Franco-Prussian War and ushered in the unification of which country?", a:"Treaty of Frankfurt; led to the German Empire's proclamation (unification of Germany)" },
+  { round:"Important History", q:"Which 20th-century agreement partitioned the Ottoman Empire territories and included the Sykes-Picot lines?", a:"The Sykes–Picot Agreement (1916) between Britain and France" },
+  { round:"Important History", q:"Which early West African empire's rulers performed lavish pilgrimages to Mecca, enhancing the empire's fame in the 14th century?", a:"The Mali Empire (Mansa Musa's pilgrimage)" }
+];
+
+let currentIndex = 0;
+const card = document.getElementById('card');
+const questionText = document.getElementById('questionText');
+const answerText = document.getElementById('answerText');
+const frontTag = document.getElementById('frontTag');
+const backTag = document.getElementById('backTag');
+const roundLabel = document.getElementById('roundLabel');
+const progress = document.getElementById('progress');
+const dateLabel = document.getElementById('dateLabel');
+
+dateLabel.textContent = new Date().toLocaleDateString();
+
+function render(i){
+  const it = flashcards[i];
+  frontTag.textContent = it.round;
+  backTag.textContent = it.round + " — Answer";
+  questionText.textContent = it.q;
+  answerText.textContent = it.a;
+  roundLabel.textContent = 'Round: ' + it.round;
+  progress.textContent = (i+1) + ' / ' + flashcards.length;
+  card.classList.remove('flipped');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function flip(){ card.classList.toggle('flipped'); }
+document.getElementById('flipBtn').addEventListener('click', flip);
+document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex+1)%flashcards.length; render(currentIndex); });
+document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex-1+flashcards.length)%flashcards.length; render(currentIndex); });
+card.addEventListener('click', flip);
+
+// keyboard & touch
+document.addEventListener('keydown',(e)=>{ if(e.key==='ArrowRight') document.getElementById('nextBtn').click(); if(e.key==='ArrowLeft') document.getElementById('prevBtn').click(); if(e.key===' ' || e.key==='Spacebar'){ e.preventDefault(); flip(); } });
+let sx=null; document.addEventListener('touchstart',e=>sx=e.changedTouches[0].screenX); document.addEventListener('touchend',e=>{ if(sx===null) return; const dx=e.changedTouches[0].screenX-sx; if(dx>60) document.getElementById('prevBtn').click(); if(dx<-60) document.getElementById('nextBtn').click(); sx=null; });
+
+render(0);
+</script>
+</body>
+</html>

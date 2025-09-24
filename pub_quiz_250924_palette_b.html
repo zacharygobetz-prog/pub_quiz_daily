@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Daily Trivia Flashcards — Palette B (Fixed)</title>
+<style>
+body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:20px; }
+.flashcard { width:90%; max-width:600px; height:260px; margin:30px auto; perspective:1000px; }
+.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.6s; cursor:pointer; }
+.card.flipped { transform:rotateY(180deg); }
+.front, .back {
+  position:absolute; width:100%; height:100%;
+  backface-visibility:hidden; display:flex; align-items:center; justify-content:center;
+  font-size:1.05rem; padding:20px; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.3);
+}
+.front { background:#083055; color:#FFD700; }
+.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
+.controls button { margin:10px; padding:10px 20px; border:none; border-radius:8px; cursor:pointer; background:#FFD700; color:#001F3F; font-weight:bold; }
+#roundLabel { font-weight:bold; margin-top:10px; }
+</style>
+</head>
+<body>
+<h1 style="color:#FFD700">Daily Trivia — Palette B</h1>
+<div id="roundLabel">Round: —</div>
+<div class="flashcard">
+  <div class="card" id="card">
+    <div class="front" id="question">Loading...</div>
+    <div class="back" id="answer">Loading...</div>
+  </div>
+</div>
+<div class="controls">
+  <button onclick="prevCard()">◀ Prev</button>
+  <button onclick="flipCard()">Flip</button>
+  <button onclick="nextCard()">Next ▶</button>
+</div>
+
+<script>
+const flashcards = [
+  // Round 1: Current World Events
+  { round:"Current World Events", q:"Who is the Prime Minister of the UK (2025)?", a:"Keir Starmer" },
+  { round:"Current World Events", q:"Which city is hosting Expo 2025?", a:"Osaka, Japan" },
+  { round:"Current World Events", q:"Who won the 2024 U.S. presidential election?", a:"Donald Trump" },
+  { round:"Current World Events", q:"Which countries joined BRICS expansion in 2024–2025?", a:"Egypt, UAE, Iran, Ethiopia, Indonesia" },
+  { round:"Current World Events", q:"Which AI family did Google release in 2023?", a:"Google Gemini" },
+  { round:"Current World Events", q:"Which nation launched Chang'e lunar missions in 2024–2025?", a:"China" },
+  { round:"Current World Events", q:"Which company continued Starship rocket tests in 2024–2025?", a:"SpaceX" },
+  { round:"Current World Events", q:"Which country hosted UEFA Euro 2024?", a:"Germany" },
+  { round:"Current World Events", q:"Which city hosted the 2024 Summer Olympics?", a:"Paris, France" },
+  { round:"Current World Events", q:"Which global conferences focused on methane reduction 2024–2025?", a:"COP climate summits" },
+
+  // Round 2: Pop Culture
+  { round:"Pop Culture", q:"Which Beatles song begins 'Hey Jude, don't make it bad'?", a:"Hey Jude (1968)" },
+  { round:"Pop Culture", q:"Who directed 'Pulp Fiction'?", a:"Quentin Tarantino" },
+  { round:"Pop Culture", q:"Which actress won Best Actress for 'The Hours'?", a:"Nicole Kidman" },
+  { round:"Pop Culture", q:"Which sitcom featured Ross, Rachel, and Chandler?", a:"Friends" },
+  { round:"Pop Culture", q:"Which 1994 film features 'Life is like a box of chocolates'?", a:"Forrest Gump" },
+  { round:"Pop Culture", q:"Who released the album '25'?", a:"Adele" },
+  { round:"Pop Culture", q:"Which trilogy includes 'The Fellowship of the Ring'?", a:"The Lord of the Rings" },
+  { round:"Pop Culture", q:"Who performed 'Like a Prayer'?", a:"Madonna" },
+  { round:"Pop Culture", q:"Which HBO series includes the Iron Throne?", a:"Game of Thrones" },
+  { round:"Pop Culture", q:"Which 1976 film featured 'Gonna Fly Now'?", a:"Rocky" },
+
+  // Round 3: Music
+  { round:"Music", q:"Which band recorded 'Dark Side of the Moon'?", a:"Pink Floyd" },
+  { round:"Music", q:"Who released 'Thriller'?", a:"Michael Jackson" },
+  { round:"Music", q:"Who composed Symphony No. 5 in C minor?", a:"Ludwig van Beethoven" },
+  { round:"Music", q:"Who is called the 'Queen of Soul'?", a:"Aretha Franklin" },
+  { round:"Music", q:"Which band had Freddie Mercury as frontman?", a:"Queen" },
+  { round:"Music", q:"Which Jamaican artist popularized reggae?", a:"Bob Marley" },
+  { round:"Music", q:"Who released the album 'Renaissance' in 2022?", a:"Beyoncé" },
+  { round:"Music", q:"Which duo produced 'Get Lucky' with Pharrell?", a:"Daft Punk" },
+  { round:"Music", q:"Which Canadian artist released 'Blue' (1971)?", a:"Joni Mitchell" },
+  { round:"Music", q:"Who is 'The Boss' and released 'Born to Run'?", a:"Bruce Springsteen" },
+
+  // Round 4: Jeopardy!-Style
+  { round:"Jeopardy!-Style", q:"Category: States — 'The Empire State'?", a:"What is New York?" },
+  { round:"Jeopardy!-Style", q:"Category: Literature — Who wrote 'Hamlet'?", a:"Who is William Shakespeare?" },
+  { round:"Jeopardy!-Style", q:"Category: Capitals — Capital of France?", a:"What is Paris?" },
+  { round:"Jeopardy!-Style", q:"Category: Science — H2O is?", a:"What is water?" },
+  { round:"Jeopardy!-Style", q:"Category: Sports — Super Bowl is championship of?", a:"What is American football?" },
+  { round:"Jeopardy!-Style", q:"Category: Music — 'Stairway to Heaven'?", a:"Who is Led Zeppelin?" },
+  { round:"Jeopardy!-Style", q:"Category: History — Who built the pyramids of Giza?", a:"What is Ancient Egypt?" },
+  { round:"Jeopardy!-Style", q:"Category: TV — Which series featured the Iron Throne?", a:"What is Game of Thrones?" },
+  { round:"Jeopardy!-Style", q:"Category: Geography — River through Baghdad?", a:"What is the Tigris?" },
+  { round:"Jeopardy!-Style", q:"Category: Food — Brie originates from?", a:"What is France?" },
+
+  // Round 5: Important History
+  { round:"Important History", q:"Who led German unification in 1871?", a:"Otto von Bismarck" },
+  { round:"Important History", q:"Which ancient civilization developed cuneiform?", a:"The Sumerians" },
+  { round:"Important History", q:"In what year did Columbus reach the Americas?", a:"1492" },
+  { round:"Important History", q:"Which English king had six wives?", a:"Henry VIII" },
+  { round:"Important History", q:"Which empire centered on Tenochtitlan?", a:"The Aztec Empire" },
+  { round:"Important History", q:"Which 1917 revolution created the USSR?", a:"The Russian Revolution" },
+  { round:"Important History", q:"Who nailed the 95 Theses to the church door?", a:"Martin Luther" },
+  { round:"Important History", q:"Which system dominated medieval European politics?", a:"Feudalism" },
+  { round:"Important History", q:"Which ancient wonder stood in Alexandria?", a:"The Lighthouse of Alexandria" },
+  { round:"Important History", q:"Which 1066 battle shaped English monarchy?", a:"The Battle of Hastings" }
+];
+
+let currentIndex = 0;
+const card = document.getElementById("card");
+const qEl = document.getElementById("question");
+const aEl = document.getElementById("answer");
+const roundLabel = document.getElementById("roundLabel");
+
+function loadCard(index){
+  qEl.textContent = flashcards[index].q;
+  aEl.textContent = flashcards[index].a;
+  roundLabel.textContent = "Round: " + flashcards[index].round;
+  card.classList.remove("flipped");
+}
+
+function flipCard(){ card.classList.toggle("flipped"); }
+function nextCard(){ currentIndex=(currentIndex+1)%flashcards.length; loadCard(currentIndex); }
+function prevCard(){ currentIndex=(currentIndex-1+flashcards.length)%flashcards.length; loadCard(currentIndex); }
+
+loadCard(currentIndex);
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Pub Quiz 2025_10_10 Palette B</title>
+<title>Priority Pub Quiz — Fri, Oct 10, 2025</title>
 <style>
 body { background:#001F3F; color:#FFD700; font-family:Arial,sans-serif; text-align:center; padding:20px; }
 .flashcard { width:90%; max-width:760px; height:320px; margin:20px auto; perspective:1100px; }
@@ -20,7 +20,7 @@ button.secondary { background:transparent; color:#FFD700; border:1px solid #FFD7
 </style>
 </head>
 <body>
-<h1 style="color:#FFD700;">Daily Trivia — Palette B</h1>
+<h1 style="color:#FFD700;">Priority Pub Quiz — Fri, Oct 10, 2025</h1>
 <div id="roundLabel">Round:</div>
 <div class="flashcard">
   <div class="card" id="card">
@@ -37,57 +37,67 @@ button.secondary { background:transparent; color:#FFD700; border:1px solid #FFD7
 
 <script>
 const flashcards = [
-{ round:"Current World Events", q:"Which country hosted the 2025 G20 Summit?", a:"Brazil" },
-{ round:"Current World Events", q:"Which Asian nation announced a new lunar base collaboration with the US in 2025?", a:"India" },
-{ round:"Current World Events", q:"Which African country introduced a new continental free trade passport in 2025?", a:"Kenya" },
-{ round:"Current World Events", q:"Which European leader announced a resignation after corruption probes in 2025?", a:"Viktor Orbán" },
-{ round:"Current World Events", q:"Which global city implemented AI-managed public transport in 2025?", a:"Singapore" },
-{ round:"Current World Events", q:"Which country joined NATO in early 2025?", a:"Sweden" },
-{ round:"Current World Events", q:"Which South American country faced record droughts impacting coffee exports in 2025?", a:"Brazil" },
-{ round:"Current World Events", q:"Which Middle Eastern country normalized relations with Israel in 2025?", a:"Saudi Arabia" },
-{ round:"Current World Events", q:"Which nation became the first to launch a commercial space tourism hub in 2025?", a:"United Arab Emirates" },
-{ round:"Current World Events", q:"Which global tech firm launched a fully holographic smartphone in 2025?", a:"Samsung" },
-{ round:"Pop Culture (1960s–2020s)", q:"Which 1969 film featured the song 'Raindrops Keep Fallin’ on My Head'?", a:"Butch Cassidy and the Sundance Kid" },
-{ round:"Pop Culture (1960s–2020s)", q:"Who won the first MTV Video Music Award for Video of the Year in 1984?", a:"The Cars for 'You Might Think'" },
-{ round:"Pop Culture (1960s–2020s)", q:"Which 1999 movie popularized bullet-time cinematography?", a:"The Matrix" },
-{ round:"Pop Culture (1960s–2020s)", q:"Which band released the 1977 album 'Never Mind the Bollocks'?", a:"Sex Pistols" },
-{ round:"Pop Culture (1960s–2020s)", q:"Which actor played both Magneto and Gandalf?", a:"Ian McKellen" },
-{ round:"Pop Culture (1960s–2020s)", q:"Which 2010s series inspired the phrase ‘Dracarys’?", a:"Game of Thrones" },
-{ round:"Pop Culture (1960s–2020s)", q:"Which 1975 musical spawned a long-running audience participation tradition?", a:"The Rocky Horror Picture Show" },
-{ round:"Pop Culture (1960s–2020s)", q:"Which 1994 film features the line 'Hope is a good thing, maybe the best of things'?", a:"The Shawshank Redemption" },
-{ round:"Pop Culture (1960s–2020s)", q:"Which director is known for the ‘Three Flavours Cornetto’ trilogy?", a:"Edgar Wright" },
-{ round:"Pop Culture (1960s–2020s)", q:"Which pop star released the album 'Future Nostalgia' in 2020?", a:"Dua Lipa" },
-{ round:"Music Research Round", q:"Who composed 'The Four Seasons'?", a:"Antonio Vivaldi" },
-{ round:"Music Research Round", q:"Which rock band’s drummer was named Keith Moon?", a:"The Who" },
-{ round:"Music Research Round", q:"Which jazz legend played the trumpet and sang 'What a Wonderful World'?", a:"Louis Armstrong" },
-{ round:"Music Research Round", q:"Who wrote and recorded 'Tangled Up in Blue'?", a:"Bob Dylan" },
-{ round:"Music Research Round", q:"Which artist’s 1982 album 'Thriller' remains the best-selling of all time?", a:"Michael Jackson" },
-{ round:"Music Research Round", q:"Which classical composer was buried in Vienna’s Central Cemetery in 1827?", a:"Ludwig van Beethoven" },
-{ round:"Music Research Round", q:"Which punk band released 'London Calling'?", a:"The Clash" },
-{ round:"Music Research Round", q:"Which American singer performed the 2024 Super Bowl halftime show?", a:"Rihanna" },
-{ round:"Music Research Round", q:"Which band wrote the anthem 'Smells Like Teen Spirit'?", a:"Nirvana" },
-{ round:"Music Research Round", q:"Which French electronic duo released 'Random Access Memories'?", a:"Daft Punk" },
-{ round:"Jeopardy!-Style", q:"Category: History — This empire built Machu Picchu.", a:"What is the Inca Empire?" },
-{ round:"Jeopardy!-Style", q:"Category: Geography — This is the longest river in the world.", a:"What is the Nile?" },
-{ round:"Jeopardy!-Style", q:"Category: Science — This element has the atomic number 1.", a:"What is Hydrogen?" },
-{ round:"Jeopardy!-Style", q:"Category: Literature — '1984' was written by this author.", a:"Who is George Orwell?" },
-{ round:"Jeopardy!-Style", q:"Category: Space — This planet is known for its Great Red Spot.", a:"What is Jupiter?" },
-{ round:"Jeopardy!-Style", q:"Category: Sports — This athlete holds the most Olympic gold medals.", a:"Who is Michael Phelps?" },
-{ round:"Jeopardy!-Style", q:"Category: Mythology — This Greek hero slew the Minotaur.", a:"Who is Theseus?" },
-{ round:"Jeopardy!-Style", q:"Category: Art — The 'Mona Lisa' is housed in this museum.", a:"What is the Louvre?" },
-{ round:"Jeopardy!-Style", q:"Category: Politics — This document begins 'We the People'.", a:"What is the U.S. Constitution?" },
-{ round:"Jeopardy!-Style", q:"Category: Movies — The quote 'Here's looking at you, kid' is from this 1942 film.", a:"What is Casablanca?" },
-{ round:"Important History", q:"Which event marked the beginning of World War I?", a:"The assassination of Archduke Franz Ferdinand" },
-{ round:"Important History", q:"Which treaty ended World War II?", a:"Treaty of San Francisco" },
-{ round:"Important History", q:"Who was the first emperor of unified China?", a:"Qin Shi Huang" },
-{ round:"Important History", q:"Which war was ended by the Treaty of Paris in 1783?", a:"The American Revolutionary War" },
-{ round:"Important History", q:"Who was the British Prime Minister during World War II?", a:"Winston Churchill" },
-{ round:"Important History", q:"Which ancient civilization built Stonehenge?", a:"The Neolithic Britons" },
-{ round:"Important History", q:"Who led the Haitian Revolution?", a:"Toussaint Louverture" },
-{ round:"Important History", q:"Which empire fell in 1453, marking the end of the Middle Ages?", a:"The Byzantine Empire" },
-{ round:"Important History", q:"Which ruler commissioned the Taj Mahal?", a:"Shah Jahan" },
-{ round:"Important History", q:"What year did the Berlin Wall fall?", a:"1989" }
+  // Round 1: Current World Events
+  { round:"Current World Events", q:"Which country hosted the 2025 G20 Summit?", a:"Brazil" },
+  { round:"Current World Events", q:"Which Asian nation announced a new lunar base collaboration with the US in 2025?", a:"India" },
+  { round:"Current World Events", q:"Which African country introduced a new continental free trade passport in 2025?", a:"Kenya" },
+  { round:"Current World Events", q:"Which European leader announced a resignation after corruption probes in 2025?", a:"Viktor Orbán" },
+  { round:"Current World Events", q:"Which global city implemented AI-managed public transport in 2025?", a:"Singapore" },
+  { round:"Current World Events", q:"Which country joined NATO in early 2025?", a:"Sweden" },
+  { round:"Current World Events", q:"Which South American country faced record droughts impacting coffee exports in 2025?", a:"Brazil" },
+  { round:"Current World Events", q:"Which Middle Eastern country normalized relations with Israel in 2025?", a:"Saudi Arabia" },
+  { round:"Current World Events", q:"Which nation became the first to launch a commercial space tourism hub in 2025?", a:"United Arab Emirates" },
+  { round:"Current World Events", q:"Which global tech firm launched a fully holographic smartphone in 2025?", a:"Samsung" },
+
+  // Round 2: Pop Culture (1960s–2020s)
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1969 film featured the song 'Raindrops Keep Fallin’ on My Head'?", a:"Butch Cassidy and the Sundance Kid" },
+  { round:"Pop Culture (1960s–2020s)", q:"Who won the first MTV Video Music Award for Video of the Year in 1984?", a:"The Cars for 'You Might Think'" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1999 movie popularized bullet-time cinematography?", a:"The Matrix" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which band released the 1977 album 'Never Mind the Bollocks'?", a:"Sex Pistols" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which actor played both Magneto and Gandalf?", a:"Ian McKellen" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 2010s series inspired the phrase ‘Dracarys’?", a:"Game of Thrones" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1975 musical spawned a long-running audience participation tradition?", a:"The Rocky Horror Picture Show" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1994 film features the line 'Hope is a good thing, maybe the best of things'?", a:"The Shawshank Redemption" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which director is known for the ‘Three Flavours Cornetto’ trilogy?", a:"Edgar Wright" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which pop star released the album 'Future Nostalgia' in 2020?", a:"Dua Lipa" },
+
+  // Round 3: Music Research Round
+  { round:"Music Research Round", q:"Who composed 'The Four Seasons'?", a:"Antonio Vivaldi" },
+  { round:"Music Research Round", q:"Which rock band’s drummer was named Keith Moon?", a:"The Who" },
+  { round:"Music Research Round", q:"Which jazz legend played the trumpet and sang 'What a Wonderful World'?", a:"Louis Armstrong" },
+  { round:"Music Research Round", q:"Who wrote and recorded 'Tangled Up in Blue'?", a:"Bob Dylan" },
+  { round:"Music Research Round", q:"Which artist’s 1982 album 'Thriller' remains the best-selling of all time?", a:"Michael Jackson" },
+  { round:"Music Research Round", q:"Which classical composer was buried in Vienna’s Central Cemetery in 1827?", a:"Ludwig van Beethoven" },
+  { round:"Music Research Round", q:"Which punk band released 'London Calling'?", a:"The Clash" },
+  { round:"Music Research Round", q:"Which American singer performed the 2024 Super Bowl halftime show?", a:"Rihanna" },
+  { round:"Music Research Round", q:"Which band wrote the anthem 'Smells Like Teen Spirit'?", a:"Nirvana" },
+  { round:"Music Research Round", q:"Which French electronic duo released 'Random Access Memories'?", a:"Daft Punk" },
+
+  // Round 4: Jeopardy!-Style
+  { round:"Jeopardy!-Style", q:"Category: History — This empire built Machu Picchu.", a:"What is the Inca Empire?" },
+  { round:"Jeopardy!-Style", q:"Category: Geography — This is the longest river in the world.", a:"What is the Nile?" },
+  { round:"Jeopardy!-Style", q:"Category: Science — This element has the atomic number 1.", a:"What is Hydrogen?" },
+  { round:"Jeopardy!-Style", q:"Category: Literature — '1984' was written by this author.", a:"Who is George Orwell?" },
+  { round:"Jeopardy!-Style", q:"Category: Space — This planet is known for its Great Red Spot.", a:"What is Jupiter?" },
+  { round:"Jeopardy!-Style", q:"Category: Sports — This athlete holds the most Olympic gold medals.", a:"Who is Michael Phelps?" },
+  { round:"Jeopardy!-Style", q:"Category: Mythology — This Greek hero slew the Minotaur.", a:"Who is Theseus?" },
+  { round:"Jeopardy!-Style", q:"Category: Art — The 'Mona Lisa' is housed in this museum.", a:"What is the Louvre?" },
+  { round:"Jeopardy!-Style", q:"Category: Politics — This document begins 'We the People'.", a:"What is the U.S. Constitution?" },
+  { round:"Jeopardy!-Style", q:"Category: Movies — The quote 'Here's looking at you, kid' is from this 1942 film.", a:"What is Casablanca?" },
+
+  // Round 5: Important History
+  { round:"Important History", q:"Which event marked the beginning of World War I?", a:"The assassination of Archduke Franz Ferdinand" },
+  { round:"Important History", q:"Which treaty ended World War II?", a:"Treaty of San Francisco" },
+  { round:"Important History", q:"Who was the first emperor of unified China?", a:"Qin Shi Huang" },
+  { round:"Important History", q:"Which war was ended by the Treaty of Paris in 1783?", a:"The American Revolutionary War" },
+  { round:"Important History", q:"Who was the British Prime Minister during World War II?", a:"Winston Churchill" },
+  { round:"Important History", q:"Which ancient civilization built Stonehenge?", a:"The Neolithic Britons" },
+  { round:"Important History", q:"Who led the Haitian Revolution?", a:"Toussaint Louverture" },
+  { round:"Important History", q:"Which empire fell in 1453, marking the end of the Middle Ages?", a:"The Byzantine Empire" },
+  { round:"Important History", q:"Which ruler commissioned the Taj Mahal?", a:"Shah Jahan" },
+  { round:"Important History", q:"What year did the Berlin Wall fall?", a:"1989" }
 ];
+
 let currentIndex = 0;
 const card = document.getElementById('card');
 const qEl = document.getElementById('questionText');

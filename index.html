@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Priority Pub Quiz Collection 🍺</title>
+  <link rel="icon" type="image/svg+xml" 
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><text y='32' font-size='32'>🍺</text></svg>">
+  <style>
+    :root { --bg: #001F3F; --gold: #FFD700; --gold-2: #FFC300; --muted: rgba(255,215,0,0.15); }
+    body { margin:0; font-family: "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial; background:var(--bg); color:var(--gold); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+    .wrap { max-width:920px; margin:28px auto; padding:18px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    h1 { margin:0; font-size:1.6rem; }
+    .meta { color:var(--gold); opacity:0.9; font-size:0.95rem; }
+    .cta { text-align:center; margin:20px 0; }
+    button { background:var(--gold); color:var(--bg); border:0; padding:12px 18px; border-radius:10px; font-weight:700; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.45); }
+    button:hover{ background:var(--gold-2); }
+    ul { list-style:none; padding:0; margin:0 auto; max-width:640px; }
+    li { padding:10px 14px; border-radius:8px; margin:8px 0; background:rgba(255,215,0,0.02); display:flex; justify-content:space-between; align-items:center; }
+    a { color:var(--gold); text-decoration:none; font-weight:600; }
+    a.small { font-weight:400; font-size:0.9rem; opacity:0.9; }
+    .empty { color:var(--muted); text-align:center; padding:30px 0; }
+    footer { margin-top:22px; color:var(--muted); font-size:0.85rem; text-align:center; }
+    @media(max-width:520px){ .wrap{padding:12px} h1{font-size:1.3rem} button{width:100%} li{font-size:0.95rem} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Priority Pub Quiz Collection 🍺</h1>
+        <div class="meta">Palette B • Newest first • Files in this repo</div>
+      </div>
+      <div class="meta">Open quizzes in new tab</div>
+    </header>
+
+    <div class="cta">
+      <button id="randomBtn">🎲 Random Quiz</button>
+    </div>
+
+    <main>
+      <ul id="quizList"></ul>
+    </main>
+
+    <footer>
+      Tip: make sure this repository is <strong>public</strong> for automatic listing to work via GitHub's API.
+    </footer>
+  </div>
+
+<script>
+(function(){
+  const owner = "zacharygobetz-prog";
+  const repo = "pub_quiz_daily";
+  const quizFiles = [
+    "Priority_Pub_Quiz_2025_Oct_17.html",
+    "Priority_Pub_Quiz_2025_Oct_16.html",
+    "Priority_Pub_Quiz_2025_Oct_15.html",
+    "Priority_Pub_Quiz_2025_Oct_14.html",
+    "Priority_Pub_Quiz_2025_Oct_13.html",
+    "Priority_Pub_Quiz_2025_Oct_12.html",
+    "Priority_Pub_Quiz_2025_Oct_11.html",
+    "Priority_Pub_Quiz_2025_Oct_10.html"
+  ];
+
+  const listEl = document.getElementById("quizList");
+  const randomBtn = document.getElementById("randomBtn");
+
+  function parseDateFromFilename(name){
+    const m = name.match(/Priority[_-]Pub[_-]Quiz[_-](\d{4})[_-]([A-Za-z]{3})[_-](\d{1,2})\.html/i);
+    if(!m) return name;
+    return `${m[2]} ${m[3]} ${m[1]}`;
+  }
+
+  listEl.innerHTML = "";
+  quizFiles.forEach(file => {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    const url = `https://${owner}.github.io/${repo}/${file}`;
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = parseDateFromFilename(file);
+    const meta = document.createElement("span");
+    meta.className = "small";
+    meta.textContent = file;
+    li.appendChild(a);
+    li.appendChild(meta);
+    listEl.appendChild(li);
+  });
+
+  randomBtn.addEventListener("click", () => {
+    const randomFile = quizFiles[Math.floor(Math.random() * quizFiles.length)];
+    const url = `https://${owner}.github.io/${repo}/${randomFile}`;
+    window.open(url, "_blank");
+  });
+})();
+</script>
+</body>
+</html>

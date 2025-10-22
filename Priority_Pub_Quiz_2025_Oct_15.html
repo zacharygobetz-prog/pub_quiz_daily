@@ -7,164 +7,137 @@
 <link rel="icon" type="image/svg+xml"
   href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><text y='32' font-size='32'>🍺</text></svg>">
 <style>
-body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
-.header { display:flex; justify-content:space-between; align-items:center; max-width:920px; margin:0 auto 8px; }
-.header .meta { font-size:13px; opacity:0.9; color:rgba(255,215,0,0.95) }
-.flashcard { width:90%; max-width:760px; height:340px; margin:16px auto; perspective:1100px; }
-.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.58s; cursor:pointer; }
-.card.flipped { transform:rotateY(180deg); }
-.front,.back { position:absolute; inset:0; padding:20px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35); display:flex; flex-direction:column; justify-content:center; align-items:flex-start; backface-visibility:hidden; text-align:left; font-size:1.03rem; line-height:1.35; }
-.front { background:#083055; color:#FFD700; }
-.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
-.tag { display:inline-block; background:rgba(255,215,0,0.08); color:var(--gold,#FFD700); padding:6px 10px; border-radius:999px; font-weight:700; margin-bottom:12px; }
-.controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
-.btn { padding:10px 14px; border-radius:10px; border:0; font-weight:700; cursor:pointer; }
-.btn.primary { background:#FFD700; color:#001F3F; }
-.btn.ghost { background:transparent; color:#FFD700; border:1px solid rgba(255,215,0,0.08); }
-.progress { margin-top:10px; font-size:13px; color:rgba(255,215,0,0.95); }
-@media(max-width:420px){ .front,.back{ font-size:0.95rem; padding:14px } }
+  /* Palette B — Blue & Gold */
+  :root{
+    --bg:#0A52A1;
+    --accent:#D4AF37;
+    --card:#FFFFFF;
+    --cardText:#0A52A1;
+    --back:#D4AF37;
+    --backText:#052a4a;
+  }
+  html,body{height:100%;margin:0}
+  body{background:var(--bg);color:var(--cardText);font-family:Inter,Arial,sans-serif;display:flex;justify-content:center;padding:18px}
+  .container{width:100%;max-width:920px}
+  h1{color:var(--accent);text-align:center;margin:6px 0;font-size:1.4rem}
+  .card-wrap{width:94%;max-width:860px;margin:18px auto;height:360px;perspective:1100px}
+  .card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .58s;cursor:pointer}
+  .card.flipped{transform:rotateY(180deg)}
+  .front,.back{position:absolute;inset:0;padding:22px;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.35);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;backface-visibility:hidden}
+  .front{background:var(--card);color:var(--cardText)}
+  .back{background:var(--back);color:var(--backText);transform:rotateY(180deg)}
+  .tag{display:inline-block;padding:6px 10px;border-radius:999px;margin-bottom:12px;background:rgba(212,175,55,0.12);color:var(--accent);font-weight:700}
+  .question{font-size:1.05rem;line-height:1.4;color:var(--cardText)}
+  .answer{font-size:1.05rem;line-height:1.4;color:var(--backText)}
+  .controls{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .btn{padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+  .btn.primary{background:var(--accent);color:var(--backText)}
+  .btn.ghost{background:transparent;color:var(--cardText);border:1px solid rgba(255,255,255,0.06)}
+  .progress{text-align:center;color:rgba(255,255,255,.95);margin-top:8px}
+  .note{font-size:.86rem;color:rgba(255,255,255,.8);text-align:center;margin-top:8px}
 </style>
 </head>
 <body>
-  <div class="container" role="main">
+  <div class="container">
     <h1>Priority Pub Quiz — 2025 Oct 15</h1>
     <div id="roundLabel" style="font-weight:800;margin-bottom:6px">Round: —</div>
 
-    <div class="card-wrap" aria-live="polite">
-      <div class="card" id="card" tabindex="0" aria-label="Trivia flashcard">
+    <div class="card-wrap">
+      <div class="card" id="card" tabindex="0">
         <div class="front">
           <div class="tag" id="frontTag">Round</div>
-          <div class="question" id="questionText">Loading question…</div>
+          <div class="question" id="questionText">Loading…</div>
         </div>
         <div class="back">
           <div class="tag" id="backTag">Answer</div>
-          <div class="answer" id="answerText">Loading answer…</div>
+          <div class="answer" id="answerText">Loading…</div>
         </div>
       </div>
     </div>
 
-    <div class="controls" role="group" aria-label="Card controls">
+    <div class="controls">
       <button class="btn ghost" id="prevBtn">◀ Prev</button>
       <button class="btn primary" id="flipBtn">Flip</button>
       <button class="btn ghost" id="nextBtn">Next ▶</button>
     </div>
 
     <div class="progress" id="progress">0 / 0</div>
-    <div class="note">Click/tap the card to flip. Use ← → or swipe. Clever + international pop-culture–savvy questions.</div>
+    <div class="note">Click/tap card to flip · ← → to move · Clever + international questions.</div>
   </div>
 
 <script>
-const flashcards = [
-  /* Round 1 — Current World Events (10) */
-  {round:"Current World Events", q:"Which international court is seated in The Hague and settles disputes between states?", a:"International Court of Justice (The Hague)"},
-  {round:"Current World Events", q:"What is the commonly used name for the UN agency that coordinates refugee assistance?", a:"UNHCR (United Nations High Commissioner for Refugees)"},
-  {round:"Current World Events", q:"What international agreement (signed in 2015) aims to limit global warming to well below 2°C?", a:"The Paris Agreement"},
-  {round:"Current World Events", q:"Which global index measures perceived levels of public sector corruption across countries?", a:"Transparency International's Corruption Perceptions Index"},
-  {round:"Current World Events", q:"What does the acronym 'ASEAN' stand for?", a:"Association of Southeast Asian Nations"},
-  {round:"Current World Events", q:"Which type of currency is abbreviated 'CBDC' in modern monetary discussions?", a:"Central Bank Digital Currency"},
-  {round:"Current World Events", q:"Name the international aviation agency that sets global flight safety standards (ICAO).", a:"International Civil Aviation Organization (ICAO)"},
-  {round:"Current World Events", q:"What global forum gathers business, political and cultural leaders annually in Davos?", a:"World Economic Forum (Davos)"},
-  {round:"Current World Events", q:"Which global body issues the Sustainable Development Goals (SDGs)?", a:"United Nations (UN)"},
-  {round:"Current World Events", q:"What acronym refers to the multilateral bank group that includes the International Bank for Reconstruction and Development?", a:"The World Bank (IBRD) / World Bank Group"},
+const flashcards=[
+{round:"Current World Events",q:"Which international court is seated in The Hague and settles disputes between states?",a:"International Court of Justice"},
+{round:"Current World Events",q:"What is the UN agency coordinating refugee assistance?",a:"UNHCR"},
+{round:"Current World Events",q:"What 2015 accord aims to limit global warming below 2°C?",a:"The Paris Agreement"},
+{round:"Current World Events",q:"Which index ranks corruption perception globally?",a:"Transparency International CPI"},
+{round:"Current World Events",q:"What does ASEAN stand for?",a:"Association of Southeast Asian Nations"},
+{round:"Current World Events",q:"CBDC stands for what new currency type?",a:"Central Bank Digital Currency"},
+{round:"Current World Events",q:"Which agency sets global flight safety standards?",a:"ICAO – International Civil Aviation Organization"},
+{round:"Current World Events",q:"Which annual forum meets in Davos?",a:"World Economic Forum"},
+{round:"Current World Events",q:"Which body created the Sustainable Development Goals?",a:"United Nations"},
+{round:"Current World Events",q:"What group includes the International Bank for Reconstruction and Development?",a:"World Bank Group"},
 
-  /* Round 2 — Pop Culture (10) */
-  {round:"Pop Culture", q:"Which Japanese animation studio released 'Spirited Away' in 2001, directed by Hayao Miyazaki?", a:"Studio Ghibli"},
-  {round:"Pop Culture", q:"Which Mexican director won Best Director at the Oscars for 'The Shape of Water' (2018)?", a:"Guillermo del Toro"},
-  {round:"Pop Culture", q:"Which Korean film became the first non-English Best Picture Oscar winner in 2020?", a:"Parasite (Bong Joon-ho)"},
-  {round:"Pop Culture", q:"Which long-running UK satire show made a star out of Jon Stewart's format counterpart?", a:"The Daily Show/UK spinoffs (Jon Stewart popularized the format)"},
-  {round:"Pop Culture", q:"Which fashion house's interlocking 'CC' logo is famously associated with haute couture?", a:"Chanel"},
-  {round:"Pop Culture", q:"Which streaming series about a media dynasty and succession debuted in 2018?", a:"Succession"},
-  {round:"Pop Culture", q:"Which Indian film-industry portmanteau names Mumbai's movie industry?", a:"Bollywood"},
-  {round:"Pop Culture", q:"Which 1990s sci-fi series blended conspiracy, noir and the paranormal with Mulder and Scully?", a:"The X-Files"},
-  {round:"Pop Culture", q:"Which artist released 'The Miseducation of…' (trick: who actually released that title)?", a:"Lauryn Hill — 'The Miseducation of Lauryn Hill'"},
-  {round:"Pop Culture", q:"Which long-running Japanese franchise features piloted giant robots called 'Gundam'?", a:"Mobile Suit Gundam"},
+{round:"Pop Culture",q:"Which studio released ‘Spirited Away’ (2001)?",a:"Studio Ghibli"},
+{round:"Pop Culture",q:"Which Mexican director won Best Director for ‘The Shape of Water’?",a:"Guillermo del Toro"},
+{round:"Pop Culture",q:"Which Korean film became the first non-English Best Picture Oscar winner (2020)?",a:"Parasite (Bong Joon-ho)"},
+{round:"Pop Culture",q:"Which fashion house’s interlocking CC logo defines haute couture?",a:"Chanel"},
+{round:"Pop Culture",q:"Which HBO series about a media dynasty debuted 2018?",a:"Succession"},
+{round:"Pop Culture",q:"Which Indian film industry’s nickname fuses Mumbai + Hollywood?",a:"Bollywood"},
+{round:"Pop Culture",q:"Which 1990s sci-fi series paired Mulder and Scully?",a:"The X-Files"},
+{round:"Pop Culture",q:"‘The Miseducation of…’ belongs to whom?",a:"Lauryn Hill"},
+{round:"Pop Culture",q:"Which franchise features piloted robots called Gundam?",a:"Mobile Suit Gundam"},
+{round:"Pop Culture",q:"Which Japanese director created My Neighbor Totoro?",a:"Hayao Miyazaki"},
 
-  /* Round 3 — Music (10) */
-  {round:"Music", q:"Which Nigerian musician pioneered Afrobeat and often used music as political commentary?", a:"Fela Kuti"},
-  {round:"Music", q:"Which Irish singer blended New Age and Celtic influences with albums like 'Watermark'?", a:"Enya"},
-  {round:"Music", q:"Which Jamaican producer innovated dub and influenced reggae's global sound?", a:"Lee 'Scratch' Perry"},
-  {round:"Music", q:"Which Icelandic artist released 'Homogenic' and is known for otherworldly visuals?", a:"Björk"},
-  {round:"Music", q:"Which American indie composer released the orchestral-tinged album 'Illinois'?", a:"Sufjan Stevens"},
-  {round:"Music", q:"Which West African music form blends jazz, funk and traditional rhythms—pioneered by Fela Kuti?", a:"Afrobeat"},
-  {round:"Music", q:"Which UK band led by Morrissey and Johnny Marr became icons of alternative rock?", a:"The Smiths"},
-  {round:"Music", q:"Which Brazilian genre fused samba and jazz and produced 'The Girl from Ipanema'?", a:"Bossa Nova"},
-  {round:"Music", q:"Which German electronic group was foundational to synth-pop and electronic music?", a:"Kraftwerk"},
-  {round:"Music", q:"Which Portuguese fado singer is legendary for melancholic performance (classic example)?", a:"Amália Rodrigues"},
+{round:"Music",q:"Who pioneered Afrobeat and used songs as protest?",a:"Fela Kuti"},
+{round:"Music",q:"Which Irish singer blended New Age and Celtic tones in ‘Watermark’?",a:"Enya"},
+{round:"Music",q:"Which Jamaican producer fathered dub music?",a:"Lee ‘Scratch’ Perry"},
+{round:"Music",q:"Which Icelandic artist released ‘Homogenic’?",a:"Björk"},
+{round:"Music",q:"Which indie composer wrote the album ‘Illinois’?",a:"Sufjan Stevens"},
+{round:"Music",q:"Which style mixes jazz + funk + West African rhythms?",a:"Afrobeat"},
+{round:"Music",q:"Which UK band with Morrissey and Johnny Marr defined alt rock?",a:"The Smiths"},
+{round:"Music",q:"Which Brazilian genre birthed ‘The Girl from Ipanema’?",a:"Bossa Nova"},
+{round:"Music",q:"Which German band pioneered electronic music with ‘Autobahn’?",a:"Kraftwerk"},
+{round:"Music",q:"Which Portuguese fado icon is known for melancholic voice?",a:"Amália Rodrigues"},
 
-  /* Round 4 — Jeopardy!-Style (10) */
-  {round:"Jeopardy!-Style", q:"Category: Capitals — This city is the capital of New Zealand.", a:"What is Wellington?"},
-  {round:"Jeopardy!-Style", q:"Category: Science — The chemical symbol 'K' stands for which element?", a:"What is potassium?"},
-  {round:"Jeopardy!-Style", q:"Category: Literature — This French aviator wrote 'The Little Prince'.", a:"Who is Antoine de Saint-Exupéry?"},
-  {round:"Jeopardy!-Style", q:"Category: Inventions — This inventor is associated with early radio transmission experiments.", a:"Who is Guglielmo Marconi?"},
-  {round:"Jeopardy!-Style", q:"Category: Film — This Mexican director also made 'Pan's Labyrinth'.", a:"Who is Guillermo del Toro?"},
-  {round:"Jeopardy!-Style", q:"Category: Sports — This country hosted the first FIFA World Cup in 1930.", a:"What is Uruguay?"},
-  {round:"Jeopardy!-Style", q:"Category: Language — 'Bonjour' is a greeting in which language?", a:"What is French?"},
-  {round:"Jeopardy!-Style", q:"Category: Art — This Renaissance polymath painted the 'Mona Lisa'.", a:"Who is Leonardo da Vinci?"},
-  {round:"Jeopardy!-Style", q:"Category: Myth — In the Ramayana, which monkey-god is a key heroic figure?", a:"Who is Hanuman?"},
-  {round:"Jeopardy!-Style", q:"Category: Technology — What does the acronym 'URL' stand for?", a:"What is Uniform Resource Locator?"},
+{round:"Jeopardy!",q:"Category: Capitals – This city is capital of New Zealand.",a:"What is Wellington?"},
+{round:"Jeopardy!",q:"Category: Science – Symbol ‘K’ means which element?",a:"What is Potassium?"},
+{round:"Jeopardy!",q:"Category: Literature – Author of ‘The Little Prince’?",a:"Who is Antoine de Saint-Exupéry?"},
+{round:"Jeopardy!",q:"Category: Inventions – Early radio pioneer?",a:"Who is Guglielmo Marconi?"},
+{round:"Jeopardy!",q:"Category: Film – Director of ‘Pan’s Labyrinth’?",a:"Who is Guillermo del Toro?"},
+{round:"Jeopardy!",q:"Category: Sports – Host of first FIFA World Cup (1930)?",a:"What is Uruguay?"},
+{round:"Jeopardy!",q:"Category: Language – ‘Bonjour’ belongs to what language?",a:"What is French?"},
+{round:"Jeopardy!",q:"Category: Art – Painter of ‘Mona Lisa’?",a:"Who is Leonardo da Vinci?"},
+{round:"Jeopardy!",q:"Category: Myth – Monkey god hero of Ramayana?",a:"Who is Hanuman?"},
+{round:"Jeopardy!",q:"Category: Tech – URL stands for what?",a:"What is Uniform Resource Locator?"},
 
-  /* Round 5 — Important History (10) */
-  {round:"Important History", q:"Which 18th-century conflict is generally called the Seven Years' War?", a:"The Seven Years' War (1756–1763)"},
-  {round:"Important History", q:"Which civilization invented cuneiform writing in ancient Mesopotamia?", a:"The Sumerians"},
-  {round:"Important History", q:"Who became the first elected female head of government (Sri Lanka, 1960)?", a:"Sirimavo Bandaranaike"},
-  {round:"Important History", q:"Which empire built the Angkor Wat complex in Cambodia?", a:"The Khmer Empire"},
-  {round:"Important History", q:"Which Chinese dynasty began large-scale construction linked to the Great Wall?", a:"The Qin Dynasty"},
-  {round:"Important History", q:"Which inventor from Mainz is credited with movable type printing in Europe?", a:"Johannes Gutenberg"},
-  {round:"Important History", q:"Which 1917 Russian event led to Bolshevik ascendancy later that year?", a:"The October/November Revolution (1917)"},
-  {round:"Important History", q:"Which 19th-century figure is most associated with the unification of Italy's volunteer armies?", a:"Giuseppe Garibaldi"},
-  {round:"Important History", q:"Which doomed passenger liner sank in 1912 leading to maritime reforms?", a:"RMS Titanic"},
-  {round:"Important History", q:"Which Hellenistic-era city was famed for its great library and scholarship?", a:"The Library of Alexandria"}
+{round:"Important History",q:"Which conflict (1756–63) reshaped empires?",a:"Seven Years’ War"},
+{round:"Important History",q:"Who invented cuneiform writing?",a:"The Sumerians"},
+{round:"Important History",q:"First female prime minister (Sri Lanka 1960)?",a:"Sirimavo Bandaranaike"},
+{round:"Important History",q:"Which empire built Angkor Wat?",a:"Khmer Empire"},
+{round:"Important History",q:"Which dynasty built early Great Wall?",a:"Qin Dynasty"},
+{round:"Important History",q:"Inventor of movable-type printing in Europe?",a:"Johannes Gutenberg"},
+{round:"Important History",q:"1917 event that led to Bolshevik rule?",a:"October Revolution"},
+{round:"Important History",q:"Who unified Italy through volunteer armies?",a:"Giuseppe Garibaldi"},
+{round:"Important History",q:"Which ship sank in 1912 causing safety reforms?",a:"RMS Titanic"},
+{round:"Important History",q:"Which ancient library symbolized lost knowledge?",a:"Library of Alexandria"}
 ];
 
-let currentIndex = 0;
-const card = document.getElementById('card');
-const questionText = document.getElementById('questionText');
-const answerText = document.getElementById('answerText');
-const frontTag = document.getElementById('frontTag');
-const backTag = document.getElementById('backTag');
-const roundLabel = document.getElementById('roundLabel');
-const progress = document.getElementById('progress');
-
-function render(i){
-  const it = flashcards[i];
-  frontTag.textContent = it.round;
-  backTag.textContent = it.round + ' — Answer';
-  questionText.textContent = it.q;
-  answerText.textContent = it.a;
-  roundLabel.textContent = 'Round: ' + it.round;
-  progress.textContent = (i+1) + ' / ' + flashcards.length;
-  card.classList.remove('flipped');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function flipCard(){
-  card.classList.toggle('flipped');
-}
-
-// Controls
-document.getElementById('flipBtn').addEventListener('click', flipCard);
-document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex = (currentIndex + 1) % flashcards.length; render(currentIndex); });
-document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex = (currentIndex - 1 + flashcards.length) % flashcards.length; render(currentIndex); });
-card.addEventListener('click', flipCard);
-
-// keyboard navigation
-document.addEventListener('keydown', (e)=>{
-  if(e.key === 'ArrowRight') document.getElementById('nextBtn').click();
-  if(e.key === 'ArrowLeft') document.getElementById('prevBtn').click();
-  if(e.key === ' '|| e.key === 'Spacebar'){ e.preventDefault(); flipCard(); }
-});
-
-// simple swipe support
-let touchStartX = null;
-document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
-document.addEventListener('touchend', e => {
-  if (touchStartX === null) return;
-  const dx = e.changedTouches[0].screenX - touchStartX;
-  if (dx > 60) document.getElementById('prevBtn').click();
-  if (dx < -60) document.getElementById('nextBtn').click();
-  touchStartX = null;
-});
-
+let i=0;
+const c=document.getElementById('card'),
+qT=document.getElementById('questionText'),
+aT=document.getElementById('answerText'),
+fT=document.getElementById('frontTag'),
+bT=document.getElementById('backTag'),
+rL=document.getElementById('roundLabel'),
+p=document.getElementById('progress');
+function render(x){const d=flashcards[x];fT.textContent=d.round;bT.textContent=d.round+' — Answer';qT.textContent=d.q;aT.textContent=d.a;rL.textContent='Round: '+d.round;p.textContent=(x+1)+' / '+flashcards.length;c.classList.remove('flipped');}
+function flip(){c.classList.toggle('flipped')}
+document.getElementById('flipBtn').addEventListener('click',flip);
+document.getElementById('nextBtn').addEventListener('click',()=>{i=(i+1)%flashcards.length;render(i)});
+document.getElementById('prevBtn').addEventListener('click',()=>{i=(i-1+flashcards.length)%flashcards.length;render(i)});
+c.addEventListener('click',flip);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')document.getElementById('nextBtn').click();if(e.key==='ArrowLeft')document.getElementById('prevBtn').click();if(e.key===' '||e.key==='Spacebar'){e.preventDefault();flip();}});
 render(0);
 </script>
 </body>

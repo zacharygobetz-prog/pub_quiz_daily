@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Priority Pub Quiz — 2025 Oct 15</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><text y='32' font-size='32'>🍺</text></svg>">
+<style>
+  /* Palette B */
+  :root{--bg:#333333;--accent:#0A5C36;--card:#ffffff;--cardText:#0A5C36;--back:#0A5C36;--backText:#fff}
+  html,body{height:100%;margin:0}
+  body{background:var(--bg);color:var(--cardText);font-family:Inter,Arial,Helvetica,sans-serif;display:flex;justify-content:center;padding:18px}
+  .container{width:100%;max-width:920px}
+  h1{color:var(--cardText);text-align:center;margin:6px 0;font-size:1.3rem}
+  .card-wrap{width:94%;max-width:860px;margin:18px auto;height:360px;perspective:1100px}
+  .card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .58s;cursor:pointer}
+  .card.flipped{transform:rotateY(180deg)}
+  .front,.back{position:absolute;inset:0;padding:22px;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.45);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;backface-visibility:hidden}
+  .front{background:var(--card);color:var(--cardText)}
+  .back{background:var(--back);color:var(--backText);transform:rotateY(180deg)}
+  .tag{display:inline-block;padding:6px 10px;border-radius:999px;margin-bottom:12px;background:rgba(10,92,54,0.08);color:var(--accent);font-weight:700}
+  .question{font-size:1.05rem;line-height:1.4;color:var(--accent)}
+  .answer{font-size:1.05rem;line-height:1.4;color:var(--backText)}
+  .controls{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .btn{padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+  .btn.primary{background:var(--accent);color:#fff}
+  .btn.ghost{background:transparent;color:var(--cardText);border:1px solid rgba(255,255,255,0.06)}
+  .progress{text-align:center;color:rgba(255,255,255,.92);margin-top:8px}
+  .note{font-size:.86rem;color:rgba(255,255,255,.7);text-align:center;margin-top:8px}
+  @media(max-width:420px){.front,.back{padding:14px;font-size:.95rem}}
+</style>
+</head>
+<body>
+  <div class="container" role="main">
+    <h1>Priority Pub Quiz — 2025 Oct 15</h1>
+    <div id="roundLabel" style="font-weight:800;margin-bottom:6px">Round: —</div>
+
+    <div class="card-wrap" aria-live="polite">
+      <div class="card" id="card" tabindex="0" aria-label="Trivia flashcard">
+        <div class="front">
+          <div class="tag" id="frontTag">Round</div>
+          <div class="question" id="questionText">Loading question…</div>
+        </div>
+        <div class="back">
+          <div class="tag" id="backTag">Answer</div>
+          <div class="answer" id="answerText">Loading answer…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls" role="group" aria-label="Card controls">
+      <button class="btn ghost" id="prevBtn">◀ Prev</button>
+      <button class="btn primary" id="flipBtn">Flip</button>
+      <button class="btn ghost" id="nextBtn">Next ▶</button>
+    </div>
+
+    <div class="progress" id="progress">0 / 0</div>
+    <div class="note">Click/tap the card to flip. Use ← → or swipe. Questions are new and intentionally clever.</div>
+  </div>
+
+<script>
+const flashcards = [
+  /* Round 1 — Current World Events (10) — clever/international but not time-sensitive specifics */
+  {round:"Current World Events", q:"Which international court is seated in The Hague and settles disputes between states?", a:"International Court of Justice (The Hague)"},
+  {round:"Current World Events", q:"What is the commonly used name for the UN agency that coordinates refugee assistance?", a:"UNHCR (United Nations High Commissioner for Refugees)"},
+  {round:"Current World Events", q:"What international agreement (signed in 2015) aims to limit global warming to well below 2°C?", a:"The Paris Agreement"},
+  {round:"Current World Events", q:"Which global index measures perceived levels of public sector corruption across countries?", a:"Transparency International's Corruption Perceptions Index"},
+  {round:"Current World Events", q:"What does the acronym 'ASEAN' stand for?", a:"Association of Southeast Asian Nations"},
+  {round:"Current World Events", q:"Which type of currency is abbreviated 'CBDC' in modern monetary discussions?", a:"Central Bank Digital Currency"},
+  {round:"Current World Events", q:"Name the international aviation agency that sets global flight safety standards (ICAO).", a:"International Civil Aviation Organization (ICAO)"},
+  {round:"Current World Events", q:"What global forum gathers business, political and cultural leaders annually in Davos?", a:"World Economic Forum (Davos)"},
+  {round:"Current World Events", q:"Which global body issues the Sustainable Development Goals (SDGs)?", a:"United Nations (UN)"},
+  {round:"Current World Events", q:"What acronym refers to the multilateral bank group that includes the International Bank for Reconstruction and Development?", a:"The World Bank (IBRD) / World Bank Group"},
+
+  /* Round 2 — Pop Culture (10) — international, clever curveballs */
+  {round:"Pop Culture", q:"Which Japanese animation studio released 'Spirited Away' in 2001, directed by Hayao Miyazaki?", a:"Studio Ghibli"},
+  {round:"Pop Culture", q:"Which Mexican director won Best Director at the Oscars for 'The Shape of Water' (2018)?", a:"Guillermo del Toro"},
+  {round:"Pop Culture", q:"Which Korean film became the first non-English Best Picture Oscar winner in 2020?", a:"Parasite (director Bong Joon-ho)"},
+  {round:"Pop Culture", q:"Which British satirical news show launched in 2005 blends comedy and current affairs and is fronted by John Oliver (US) or similar?", a:"The Daily Show (US) inspired many — John Oliver's 'Last Week Tonight' is in that vein"},
+  {round:"Pop Culture", q:"Which fashion house's interlocking 'CC' logo is famously associated with haute couture?", a:"Chanel"},
+  {round:"Pop Culture", q:"Which streaming series about a dysfunctional media family (debut 2018) skewers power, PR and succession?", a:"Succession"},
+  {round:"Pop Culture", q:"Which Indian film industry's nickname is a portmanteau referencing its city and 'Hollywood'?", a:"Bollywood (Mumbai-based)"},
+  {round:"Pop Culture", q:"Which cult 1990s sci-fi series blended noir and digital paranoia and featured Mulder and Scully?", a:"The X-Files"},
+  {round:"Pop Culture", q:"Which Canadian singer-songwriter released an album called 'The Miseducation of…' — trick question: which artist actually released that title?", a:"Trick: 'The Miseducation of Lauryn Hill' — Lauryn Hill"},
+  {round:"Pop Culture", q:"Which long-running Japanese media franchise features a heroic giant robot named 'Gundam'?", a:"Mobile Suit Gundam (Gundam franchise)"},
+
+  /* Round 3 — Music (10) — listenable, international picks */
+  {round:"Music", q:"Which Nigerian musician pioneered Afrobeat and used music as political commentary?", a:"Fela Kuti"},
+  {round:"Music", q:"Which Irish singer blended New Age and Celtic influences with albums like 'Watermark'?", a:"Enya"},
+  {round:"Music", q:"Which Jamaican-born artist is synonymous with dub and reggae innovations and a militant aesthetic?", a:"Lee 'Scratch' Perry (or Bob Marley for mainstream; Perry for production innovation)"},
+  {round:"Music", q:"Which Icelandic artist released the album 'Homogenic' and is known for otherworldly visuals?", a:"Björk"},
+  {round:"Music", q:"Which American songwriter's album 'Illinois' showcases indie-folk storytelling and orchestration?", a:"Sufjan Stevens"},
+  {round:"Music", q:"Which West African music form, led by artists like Fela Kuti, blends jazz, funk and traditional rhythms?", a:"Afrobeat"},
+  {round:"Music", q:"Which 1990s UK band led by Morrissey and Johnny Marr became an icon of alternative rock?", a:"The Smiths"},
+  {round:"Music", q:"Which Brazilian music style, born in the 1950s, fused samba with jazz and gave the world 'The Girl from Ipanema'?", a:"Bossa Nova"},
+  {round:"Music", q:"Which experimental electronic band from Germany helped define synth-pop with albums like 'Autobahn'?", a:"Kraftwerk"},
+  {round:"Music", q:"Which Portuguese fado singer gained global fame for a melancholic voice and heartfelt performance?", a:"Amália Rodrigues (classic) — or more recent: Mariza"},
+
+  /* Round 4 — Jeopardy!-Style (10) — answers as questions, fresh topics */
+  {round:"Jeopardy!-Style", q:"Category: Capitals — This city is the capital of New Zealand.", a:"What is Wellington?"},
+  {round:"Jeopardy!-Style", q:"Category: Science — The chemical symbol 'K' stands for which element?", a:"What is potassium?"},
+  {round:"Jeopardy!-Style", q:"Category: Literature — This French aviator wrote 'The Little Prince'.", a:"Who is Antoine de Saint-Exupéry?"},
+  {round:"Jeopardy!-Style", q:"Category: Inventions — This inventor is often credited with early radio transmission experiments and the Marconi Company is named after him.", a:"Who is Guglielmo Marconi?"},
+  {round:"Jeopardy!-Style", q:"Category: Film — This Mexican director also made 'Pan's Labyrinth'.", a:"Who is Guillermo del Toro?"},
+  {round:"Jeopardy!-Style", q:"Category: Sports — This country hosted the first FIFA World Cup in 1930.", a:"What is Uruguay?"},
+  {round:"Jeopardy!-Style", q:"Category: Language — 'Bonjour' is a greeting in which language?", a:"What is French?"},
+  {round:"Jeopardy!-Style", q:"Category: Art — This Renaissance polymath painted the 'Mona Lisa'.", a:"Who is Leonardo da Vinci?"},
+  {round:"Jeopardy!-Style", q:"Category: Myth — In Hindu tradition, this monkey-god is a central heroic figure in the Ramayana.", a:"Who is Hanuman?"},
+  {round:"Jeopardy!-Style", q:"Category: Technology — This acronym 'URL' stands for what?", a:"What is Uniform Resource Locator?"},
+
+  /* Round 5 — Important History (10) — international essentials different from previous sets */
+  {round:"Important History", q:"Which 18th-century conflict is known as the Seven Years' War and reshaped European empires?", a:"The Seven Years' War (1756–1763)"},
+  {round:"Important History", q:"Which ancient Mesopotamian civilization invented cuneiform writing?", a:"The Sumerians"},
+  {round:"Important History", q:"Who was the first female prime minister in modern world history (Sri Lanka, 1960)?", a:"Sirimavo Bandaranaike"},
+  {round:"Important History", q:"Which empire built the monumental Angkor Wat complex in present-day Cambodia?", a:"The Khmer Empire"},
+  {round:"Important History", q:"Which dynasty in China is commonly associated with the earliest large-scale construction of the Great Wall?", a:"The Qin Dynasty"},
+  {round:"Important History", q:"Which printing technology innovator from Mainz is credited with movable type that revolutionized Europe?", a:"Johannes Gutenberg"},
+  {round:"Important History", q:"Which 1917 event in Russia led to the Bolsheviks seizing power later that year?", a:"The October/November Revolution (1917)"},
+  {round:"Important History", q:"Which 19th-century leader is known for unifying modern Italy?", a:"Giuseppe Garibaldi (and statesman Cavour; Garibaldi famed for military unification)"},
+  {round:"Important History", q:"Which ship's sinking in 1912 prompted major changes in maritime safety regulations?", a:"RMS Titanic"},
+  {round:"Important History", q:"Which ancient city housed the famed library that became a symbol of lost classical knowledge?", a:"The Library of Alexandria"}
+];
+
+let currentIndex = 0;
+const card = document.getElementById('card');
+const questionText = document.getElementById('questionText');
+const answerText = document.getElementById('answerText');
+const frontTag = document.getElementById('frontTag');
+const backTag = document.getElementById('backTag');
+const roundLabel = document.getElementById('roundLabel');
+const progress = document.getElementById('progress');
+
+function render(i){
+  const it = flashcards[i];
+  frontTag.textContent = it.round;
+  backTag.textContent = it.round + ' — Answer';
+  questionText.textContent = it.q;
+  answerText.textContent = it.a;
+  roundLabel.textContent = 'Round: ' + it.round;
+  progress.textContent = (i+1) + ' / ' + flashcards.length;
+  card.classList.remove('flipped');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function flipCard(){
+  card.classList.toggle('flipped');
+}
+
+// Controls
+document.getElementById('flipBtn').addEventListener('click', flipCard);
+document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex = (currentIndex + 1) % flashcards.length; render(currentIndex); });
+document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex = (currentIndex - 1 + flashcards.length) % flashcards.length; render(currentIndex); });
+card.addEventListener('click', flipCard);
+
+// keyboard navigation
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key === 'ArrowLeft') document.getElementById('prevBtn').click();
+  if(e.key === ' '|| e.key === 'Spacebar'){ e.preventDefault(); flipCard(); }
+});
+
+// simple swipe support
+let touchStartX = null;
+document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', e => {
+  if (touchStartX === null) return;
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  if (dx > 60) document.getElementById('prevBtn').click();
+  if (dx < -60) document.getElementById('nextBtn').click();
+  touchStartX = null;
+});
+
+render(0);
+</script>
+</body>
+</html>

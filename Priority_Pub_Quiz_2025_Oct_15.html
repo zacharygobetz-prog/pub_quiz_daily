@@ -7,34 +7,22 @@
 <link rel="icon" type="image/svg+xml"
   href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><text y='32' font-size='32'>🍺</text></svg>">
 <style>
-  /* Palette B: gold & blue */
-  :root{
-    --bg: #333333;
-    --accent: #0A5C36;
-    --card: #ffffff;
-    --cardText: #0A5C36;
-    --back: #0A5C36;
-    --backText: #ffffff;  }
-  html,body{height:100%;margin:0}
-  body{background:var(--bg);color:var(--cardText);font-family:Inter,Arial,Helvetica,sans-serif;display:flex;justify-content:center;padding:18px}
-  .container{width:100%;max-width:920px}
-  h1{color:var(--cardText);text-align:center;margin:6px 0;font-size:1.3rem}
-  .card-wrap{width:94%;max-width:860px;margin:18px auto;height:360px;perspective:1100px}
-  .card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .58s;cursor:pointer}
-  .card.flipped{transform:rotateY(180deg)}
-  .front,.back{position:absolute;inset:0;padding:22px;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.35);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;backface-visibility:hidden}
-  .front{background:var(--card);color:var(--cardText)}
-  .back{background:var(--back);color:var(--backText);transform:rotateY(180deg)}
-  .tag{display:inline-block;padding:6px 10px;border-radius:999px;margin-bottom:12px;background:rgba(212,175,55,0.12);color:var(--accent);font-weight:700}
-  .question{font-size:1.05rem;line-height:1.4;color:var(--cardText)}
-  .answer{font-size:1.05rem;line-height:1.4;color:var(--backText)}
-  .controls{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-  .btn{padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
-  .btn.primary{background:var(--accent);color:var(--backText)}
-  .btn.ghost{background:transparent;color:var(--cardText);border:1px solid rgba(255,255,255,0.06)}
-  .progress{text-align:center;color:rgba(255,255,255,.95);margin-top:8px}
-  .note{font-size:.86rem;color:rgba(255,255,255,.8);text-align:center;margin-top:8px}
-  @media(max-width:420px){.front,.back{padding:14px;font-size:.95rem}}
+body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
+.header { display:flex; justify-content:space-between; align-items:center; max-width:920px; margin:0 auto 8px; }
+.header .meta { font-size:13px; opacity:0.9; color:rgba(255,215,0,0.95) }
+.flashcard { width:90%; max-width:760px; height:340px; margin:16px auto; perspective:1100px; }
+.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.58s; cursor:pointer; }
+.card.flipped { transform:rotateY(180deg); }
+.front,.back { position:absolute; inset:0; padding:20px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35); display:flex; flex-direction:column; justify-content:center; align-items:flex-start; backface-visibility:hidden; text-align:left; font-size:1.03rem; line-height:1.35; }
+.front { background:#083055; color:#FFD700; }
+.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
+.tag { display:inline-block; background:rgba(255,215,0,0.08); color:var(--gold,#FFD700); padding:6px 10px; border-radius:999px; font-weight:700; margin-bottom:12px; }
+.controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+.btn { padding:10px 14px; border-radius:10px; border:0; font-weight:700; cursor:pointer; }
+.btn.primary { background:#FFD700; color:#001F3F; }
+.btn.ghost { background:transparent; color:#FFD700; border:1px solid rgba(255,215,0,0.08); }
+.progress { margin-top:10px; font-size:13px; color:rgba(255,215,0,0.95); }
+@media(max-width:420px){ .front,.back{ font-size:0.95rem; padding:14px } }
 </style>
 </head>
 <body>

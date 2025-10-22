@@ -25,29 +25,37 @@ body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-al
 </style>
 </head>
 <body>
-<div class="container">
-<h1>Priority Pub Quiz — 2025 Oct 16</h1>
-<div id="roundLabel" style="font-weight:800;margin-bottom:6px">Round: —</div>
-
-<div class="card-wrap">
-  <div class="card" id="card" tabindex="0">
-    <div class="front">
-      <div class="tag" id="frontTag">Round</div>
-      <div class="question" id="questionText">Loading…</div>
+  <div class="header">
+    <div>
+      <h1 style="margin:0;color:#FFD700;">Priority Pub Quiz — 2025 Oct 14</h1>
+      <div class="meta">Palette B • 5 rounds × 10 questions • Witty & pop-culture infused</div>
     </div>
-    <div class="back">
-      <div class="tag" id="backTag">Answer</div>
-      <div class="answer" id="answerText">Loading…</div>
+    <div class="meta">Daily pack</div>
+  </div>
+
+  <div id="roundLabel" style="max-width:760px;margin:8px auto;font-weight:800">Round: —</div>
+
+  <div class="flashcard" role="article" aria-live="polite">
+    <div class="card" id="card" tabindex="0" aria-pressed="false">
+      <div class="front">
+        <div class="tag" id="frontTag">Round</div>
+        <div id="questionText">Loading question…</div>
+      </div>
+      <div class="back">
+        <div class="tag" id="backTag">Answer</div>
+        <div id="answerText">Loading answer…</div>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="controls">
-  <button class="btn ghost" id="prevBtn">◀ Prev</button>
-  <button class="btn primary" id="flipBtn">Flip</button>
-  <button class="btn ghost" id="nextBtn">Next ▶</button>
-</div>
-<div class="progress" id="progress">0 / 0</div>
+  <div class="controls" role="group">
+    <button class="btn ghost" id="prevBtn">◀ Prev</button>
+    <button class="btn primary" id="flipBtn">Flip</button>
+    <button class="btn ghost" id="nextBtn">Next ▶</button>
+  </div>
+
+  <div class="progress" id="progress">0 / 0</div>
+  <div style="max-width:760px;margin:10px auto;color:rgba(255,215,0,0.85);font-size:12px">Tap card to flip. Use ← → keys or swipe on mobile.</div>
 
 <script>
 const flashcards = [

@@ -4,10 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Priority Pub Quiz — 2025 Oct 15</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><text y='32' font-size='32'>🍺</text></svg>">
+<link rel="icon" type="image/svg+xml"
+  href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><text y='32' font-size='32'>🍺</text></svg>">
 <style>
-  /* Palette B */
-  :root{--bg:#333333;--accent:#0A5C36;--card:#ffffff;--cardText:#0A5C36;--back:#0A5C36;--backText:#fff}
+  /* Palette B: gold & blue */
+  :root{
+    --bg: #0A52A1;        /* deep blue background */
+    --accent: #D4AF37;    /* gold accent */
+    --card: #ffffff;
+    --cardText: #0A52A1;  /* blue text on cards */
+    --back: #D4AF37;      /* gold back */
+    --backText: #052a4a;  /* dark blue text on gold back */
+  }
   html,body{height:100%;margin:0}
   body{background:var(--bg);color:var(--cardText);font-family:Inter,Arial,Helvetica,sans-serif;display:flex;justify-content:center;padding:18px}
   .container{width:100%;max-width:920px}
@@ -15,18 +23,18 @@
   .card-wrap{width:94%;max-width:860px;margin:18px auto;height:360px;perspective:1100px}
   .card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .58s;cursor:pointer}
   .card.flipped{transform:rotateY(180deg)}
-  .front,.back{position:absolute;inset:0;padding:22px;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.45);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;backface-visibility:hidden}
+  .front,.back{position:absolute;inset:0;padding:22px;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.35);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;backface-visibility:hidden}
   .front{background:var(--card);color:var(--cardText)}
   .back{background:var(--back);color:var(--backText);transform:rotateY(180deg)}
-  .tag{display:inline-block;padding:6px 10px;border-radius:999px;margin-bottom:12px;background:rgba(10,92,54,0.08);color:var(--accent);font-weight:700}
-  .question{font-size:1.05rem;line-height:1.4;color:var(--accent)}
+  .tag{display:inline-block;padding:6px 10px;border-radius:999px;margin-bottom:12px;background:rgba(212,175,55,0.12);color:var(--accent);font-weight:700}
+  .question{font-size:1.05rem;line-height:1.4;color:var(--cardText)}
   .answer{font-size:1.05rem;line-height:1.4;color:var(--backText)}
   .controls{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
   .btn{padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
-  .btn.primary{background:var(--accent);color:#fff}
+  .btn.primary{background:var(--accent);color:var(--backText)}
   .btn.ghost{background:transparent;color:var(--cardText);border:1px solid rgba(255,255,255,0.06)}
-  .progress{text-align:center;color:rgba(255,255,255,.92);margin-top:8px}
-  .note{font-size:.86rem;color:rgba(255,255,255,.7);text-align:center;margin-top:8px}
+  .progress{text-align:center;color:rgba(255,255,255,.95);margin-top:8px}
+  .note{font-size:.86rem;color:rgba(255,255,255,.8);text-align:center;margin-top:8px}
   @media(max-width:420px){.front,.back{padding:14px;font-size:.95rem}}
 </style>
 </head>
@@ -55,12 +63,12 @@
     </div>
 
     <div class="progress" id="progress">0 / 0</div>
-    <div class="note">Click/tap the card to flip. Use ← → or swipe. Questions are new and intentionally clever.</div>
+    <div class="note">Click/tap the card to flip. Use ← → or swipe. Clever + international pop-culture–savvy questions.</div>
   </div>
 
 <script>
 const flashcards = [
-  /* Round 1 — Current World Events (10) — clever/international but not time-sensitive specifics */
+  /* Round 1 — Current World Events (10) */
   {round:"Current World Events", q:"Which international court is seated in The Hague and settles disputes between states?", a:"International Court of Justice (The Hague)"},
   {round:"Current World Events", q:"What is the commonly used name for the UN agency that coordinates refugee assistance?", a:"UNHCR (United Nations High Commissioner for Refugees)"},
   {round:"Current World Events", q:"What international agreement (signed in 2015) aims to limit global warming to well below 2°C?", a:"The Paris Agreement"},
@@ -72,53 +80,53 @@ const flashcards = [
   {round:"Current World Events", q:"Which global body issues the Sustainable Development Goals (SDGs)?", a:"United Nations (UN)"},
   {round:"Current World Events", q:"What acronym refers to the multilateral bank group that includes the International Bank for Reconstruction and Development?", a:"The World Bank (IBRD) / World Bank Group"},
 
-  /* Round 2 — Pop Culture (10) — international, clever curveballs */
+  /* Round 2 — Pop Culture (10) */
   {round:"Pop Culture", q:"Which Japanese animation studio released 'Spirited Away' in 2001, directed by Hayao Miyazaki?", a:"Studio Ghibli"},
   {round:"Pop Culture", q:"Which Mexican director won Best Director at the Oscars for 'The Shape of Water' (2018)?", a:"Guillermo del Toro"},
-  {round:"Pop Culture", q:"Which Korean film became the first non-English Best Picture Oscar winner in 2020?", a:"Parasite (director Bong Joon-ho)"},
-  {round:"Pop Culture", q:"Which British satirical news show launched in 2005 blends comedy and current affairs and is fronted by John Oliver (US) or similar?", a:"The Daily Show (US) inspired many — John Oliver's 'Last Week Tonight' is in that vein"},
+  {round:"Pop Culture", q:"Which Korean film became the first non-English Best Picture Oscar winner in 2020?", a:"Parasite (Bong Joon-ho)"},
+  {round:"Pop Culture", q:"Which long-running UK satire show made a star out of Jon Stewart's format counterpart?", a:"The Daily Show/UK spinoffs (Jon Stewart popularized the format)"},
   {round:"Pop Culture", q:"Which fashion house's interlocking 'CC' logo is famously associated with haute couture?", a:"Chanel"},
-  {round:"Pop Culture", q:"Which streaming series about a dysfunctional media family (debut 2018) skewers power, PR and succession?", a:"Succession"},
-  {round:"Pop Culture", q:"Which Indian film industry's nickname is a portmanteau referencing its city and 'Hollywood'?", a:"Bollywood (Mumbai-based)"},
-  {round:"Pop Culture", q:"Which cult 1990s sci-fi series blended noir and digital paranoia and featured Mulder and Scully?", a:"The X-Files"},
-  {round:"Pop Culture", q:"Which Canadian singer-songwriter released an album called 'The Miseducation of…' — trick question: which artist actually released that title?", a:"Trick: 'The Miseducation of Lauryn Hill' — Lauryn Hill"},
-  {round:"Pop Culture", q:"Which long-running Japanese media franchise features a heroic giant robot named 'Gundam'?", a:"Mobile Suit Gundam (Gundam franchise)"},
+  {round:"Pop Culture", q:"Which streaming series about a media dynasty and succession debuted in 2018?", a:"Succession"},
+  {round:"Pop Culture", q:"Which Indian film-industry portmanteau names Mumbai's movie industry?", a:"Bollywood"},
+  {round:"Pop Culture", q:"Which 1990s sci-fi series blended conspiracy, noir and the paranormal with Mulder and Scully?", a:"The X-Files"},
+  {round:"Pop Culture", q:"Which artist released 'The Miseducation of…' (trick: who actually released that title)?", a:"Lauryn Hill — 'The Miseducation of Lauryn Hill'"},
+  {round:"Pop Culture", q:"Which long-running Japanese franchise features piloted giant robots called 'Gundam'?", a:"Mobile Suit Gundam"},
 
-  /* Round 3 — Music (10) — listenable, international picks */
-  {round:"Music", q:"Which Nigerian musician pioneered Afrobeat and used music as political commentary?", a:"Fela Kuti"},
+  /* Round 3 — Music (10) */
+  {round:"Music", q:"Which Nigerian musician pioneered Afrobeat and often used music as political commentary?", a:"Fela Kuti"},
   {round:"Music", q:"Which Irish singer blended New Age and Celtic influences with albums like 'Watermark'?", a:"Enya"},
-  {round:"Music", q:"Which Jamaican-born artist is synonymous with dub and reggae innovations and a militant aesthetic?", a:"Lee 'Scratch' Perry (or Bob Marley for mainstream; Perry for production innovation)"},
-  {round:"Music", q:"Which Icelandic artist released the album 'Homogenic' and is known for otherworldly visuals?", a:"Björk"},
-  {round:"Music", q:"Which American songwriter's album 'Illinois' showcases indie-folk storytelling and orchestration?", a:"Sufjan Stevens"},
-  {round:"Music", q:"Which West African music form, led by artists like Fela Kuti, blends jazz, funk and traditional rhythms?", a:"Afrobeat"},
-  {round:"Music", q:"Which 1990s UK band led by Morrissey and Johnny Marr became an icon of alternative rock?", a:"The Smiths"},
-  {round:"Music", q:"Which Brazilian music style, born in the 1950s, fused samba with jazz and gave the world 'The Girl from Ipanema'?", a:"Bossa Nova"},
-  {round:"Music", q:"Which experimental electronic band from Germany helped define synth-pop with albums like 'Autobahn'?", a:"Kraftwerk"},
-  {round:"Music", q:"Which Portuguese fado singer gained global fame for a melancholic voice and heartfelt performance?", a:"Amália Rodrigues (classic) — or more recent: Mariza"},
+  {round:"Music", q:"Which Jamaican producer innovated dub and influenced reggae's global sound?", a:"Lee 'Scratch' Perry"},
+  {round:"Music", q:"Which Icelandic artist released 'Homogenic' and is known for otherworldly visuals?", a:"Björk"},
+  {round:"Music", q:"Which American indie composer released the orchestral-tinged album 'Illinois'?", a:"Sufjan Stevens"},
+  {round:"Music", q:"Which West African music form blends jazz, funk and traditional rhythms—pioneered by Fela Kuti?", a:"Afrobeat"},
+  {round:"Music", q:"Which UK band led by Morrissey and Johnny Marr became icons of alternative rock?", a:"The Smiths"},
+  {round:"Music", q:"Which Brazilian genre fused samba and jazz and produced 'The Girl from Ipanema'?", a:"Bossa Nova"},
+  {round:"Music", q:"Which German electronic group was foundational to synth-pop and electronic music?", a:"Kraftwerk"},
+  {round:"Music", q:"Which Portuguese fado singer is legendary for melancholic performance (classic example)?", a:"Amália Rodrigues"},
 
-  /* Round 4 — Jeopardy!-Style (10) — answers as questions, fresh topics */
+  /* Round 4 — Jeopardy!-Style (10) */
   {round:"Jeopardy!-Style", q:"Category: Capitals — This city is the capital of New Zealand.", a:"What is Wellington?"},
   {round:"Jeopardy!-Style", q:"Category: Science — The chemical symbol 'K' stands for which element?", a:"What is potassium?"},
   {round:"Jeopardy!-Style", q:"Category: Literature — This French aviator wrote 'The Little Prince'.", a:"Who is Antoine de Saint-Exupéry?"},
-  {round:"Jeopardy!-Style", q:"Category: Inventions — This inventor is often credited with early radio transmission experiments and the Marconi Company is named after him.", a:"Who is Guglielmo Marconi?"},
+  {round:"Jeopardy!-Style", q:"Category: Inventions — This inventor is associated with early radio transmission experiments.", a:"Who is Guglielmo Marconi?"},
   {round:"Jeopardy!-Style", q:"Category: Film — This Mexican director also made 'Pan's Labyrinth'.", a:"Who is Guillermo del Toro?"},
   {round:"Jeopardy!-Style", q:"Category: Sports — This country hosted the first FIFA World Cup in 1930.", a:"What is Uruguay?"},
   {round:"Jeopardy!-Style", q:"Category: Language — 'Bonjour' is a greeting in which language?", a:"What is French?"},
   {round:"Jeopardy!-Style", q:"Category: Art — This Renaissance polymath painted the 'Mona Lisa'.", a:"Who is Leonardo da Vinci?"},
-  {round:"Jeopardy!-Style", q:"Category: Myth — In Hindu tradition, this monkey-god is a central heroic figure in the Ramayana.", a:"Who is Hanuman?"},
-  {round:"Jeopardy!-Style", q:"Category: Technology — This acronym 'URL' stands for what?", a:"What is Uniform Resource Locator?"},
+  {round:"Jeopardy!-Style", q:"Category: Myth — In the Ramayana, which monkey-god is a key heroic figure?", a:"Who is Hanuman?"},
+  {round:"Jeopardy!-Style", q:"Category: Technology — What does the acronym 'URL' stand for?", a:"What is Uniform Resource Locator?"},
 
-  /* Round 5 — Important History (10) — international essentials different from previous sets */
-  {round:"Important History", q:"Which 18th-century conflict is known as the Seven Years' War and reshaped European empires?", a:"The Seven Years' War (1756–1763)"},
-  {round:"Important History", q:"Which ancient Mesopotamian civilization invented cuneiform writing?", a:"The Sumerians"},
-  {round:"Important History", q:"Who was the first female prime minister in modern world history (Sri Lanka, 1960)?", a:"Sirimavo Bandaranaike"},
-  {round:"Important History", q:"Which empire built the monumental Angkor Wat complex in present-day Cambodia?", a:"The Khmer Empire"},
-  {round:"Important History", q:"Which dynasty in China is commonly associated with the earliest large-scale construction of the Great Wall?", a:"The Qin Dynasty"},
-  {round:"Important History", q:"Which printing technology innovator from Mainz is credited with movable type that revolutionized Europe?", a:"Johannes Gutenberg"},
-  {round:"Important History", q:"Which 1917 event in Russia led to the Bolsheviks seizing power later that year?", a:"The October/November Revolution (1917)"},
-  {round:"Important History", q:"Which 19th-century leader is known for unifying modern Italy?", a:"Giuseppe Garibaldi (and statesman Cavour; Garibaldi famed for military unification)"},
-  {round:"Important History", q:"Which ship's sinking in 1912 prompted major changes in maritime safety regulations?", a:"RMS Titanic"},
-  {round:"Important History", q:"Which ancient city housed the famed library that became a symbol of lost classical knowledge?", a:"The Library of Alexandria"}
+  /* Round 5 — Important History (10) */
+  {round:"Important History", q:"Which 18th-century conflict is generally called the Seven Years' War?", a:"The Seven Years' War (1756–1763)"},
+  {round:"Important History", q:"Which civilization invented cuneiform writing in ancient Mesopotamia?", a:"The Sumerians"},
+  {round:"Important History", q:"Who became the first elected female head of government (Sri Lanka, 1960)?", a:"Sirimavo Bandaranaike"},
+  {round:"Important History", q:"Which empire built the Angkor Wat complex in Cambodia?", a:"The Khmer Empire"},
+  {round:"Important History", q:"Which Chinese dynasty began large-scale construction linked to the Great Wall?", a:"The Qin Dynasty"},
+  {round:"Important History", q:"Which inventor from Mainz is credited with movable type printing in Europe?", a:"Johannes Gutenberg"},
+  {round:"Important History", q:"Which 1917 Russian event led to Bolshevik ascendancy later that year?", a:"The October/November Revolution (1917)"},
+  {round:"Important History", q:"Which 19th-century figure is most associated with the unification of Italy's volunteer armies?", a:"Giuseppe Garibaldi"},
+  {round:"Important History", q:"Which doomed passenger liner sank in 1912 leading to maritime reforms?", a:"RMS Titanic"},
+  {round:"Important History", q:"Which Hellenistic-era city was famed for its great library and scholarship?", a:"The Library of Alexandria"}
 ];
 
 let currentIndex = 0;

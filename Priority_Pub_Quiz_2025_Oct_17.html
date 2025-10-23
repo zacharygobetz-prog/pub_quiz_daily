@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Priority Pub Quiz — 2025 Oct 14</title>
+<style>
+body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
+.header { display:flex; justify-content:space-between; align-items:center; max-width:920px; margin:0 auto 8px; }
+.header .meta { font-size:13px; opacity:0.9; color:rgba(255,215,0,0.95) }
+.flashcard { width:90%; max-width:760px; height:340px; margin:16px auto; perspective:1100px; }
+.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.58s; cursor:pointer; }
+.card.flipped { transform:rotateY(180deg); }
+.front,.back { position:absolute; inset:0; padding:20px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35); display:flex; flex-direction:column; justify-content:center; align-items:flex-start; backface-visibility:hidden; text-align:left; font-size:1.03rem; line-height:1.35; }
+.front { background:#083055; color:#FFD700; }
+.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
+.tag { display:inline-block; background:rgba(255,215,0,0.08); color:var(--gold,#FFD700); padding:6px 10px; border-radius:999px; font-weight:700; margin-bottom:12px; }
+.controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+.btn { padding:10px 14px; border-radius:10px; border:0; font-weight:700; cursor:pointer; }
+.btn.primary { background:#FFD700; color:#001F3F; }
+.btn.ghost { background:transparent; color:#FFD700; border:1px solid rgba(255,215,0,0.08); }
+.progress { margin-top:10px; font-size:13px; color:rgba(255,215,0,0.95); }
+@media(max-width:420px){ .front,.back{ font-size:0.95rem; padding:14px } }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1 style="margin:0;color:#FFD700;">Priority Pub Quiz — 2025 Oct 16</h1>
+      <div class="meta">Palette B • 5 rounds × 10 questions • Witty & pop-culture infused</div>
+    </div>
+    <div class="meta">Daily pack</div>
+  </div>
+
+  <div id="roundLabel" style="max-width:760px;margin:8px auto;font-weight:800">Round: —</div>
+
+  <div class="flashcard" role="article" aria-live="polite">
+    <div class="card" id="card" tabindex="0" aria-pressed="false">
+      <div class="front">
+        <div class="tag" id="frontTag">Round</div>
+        <div id="questionText">Loading question…</div>
+      </div>
+      <div class="back">
+        <div class="tag" id="backTag">Answer</div>
+        <div id="answerText">Loading answer…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls" role="group">
+    <button class="btn ghost" id="prevBtn">◀ Prev</button>
+    <button class="btn primary" id="flipBtn">Flip</button>
+    <button class="btn ghost" id="nextBtn">Next ▶</button>
+  </div>
+
+  <div class="progress" id="progress">0 / 0</div>
+  <div style="max-width:760px;margin:10px auto;color:rgba(255,215,0,0.85);font-size:12px">Tap card to flip. Use ← → keys or swipe on mobile.</div>
+
+<script>
+const flashcards = [
+  { round:"Current World Events", q:"Which Middle Eastern country continued major desalination and water-tech investments in the 2020s?", a:"Saudi Arabia / UAE (examples)"},
+  { round:"Current World Events", q:"Which EU program funds large-scale research and innovation cycles, e.g., Horizon Europe?", a:"Horizon Europe (EU research & innovation program)"},
+  { round:"Current World Events", q:"Which country announced a national strategy to phase out coal power plants during the 2020s?", a:"Germany (and many EU countries have phase-out plans)"},
+  { round:"Current World Events", q:"Which global NGO organizes the World Press Photo awards celebrating photojournalism?", a:"World Press Photo Foundation"},
+  { round:"Current World Events", q:"Which Pacific forum addresses island state climate resilience and disaster finance?", a:"Pacific Islands Forum (and UN climate processes)"},
+  { round:"Current World Events", q:"Which global body oversees the classification and naming of new viruses and diseases?", a:"World Health Organization (WHO) / ICTV for viruses, depending on context"},
+  { round:"Current World Events", q:"Which major Asian city piloted congestion pricing models in the 2020s?", a:"Singapore / possible other pilots (example Singapore or London earlier)"},
+  { round:"Current World Events", q:"Which country invested heavily in green steel production pilot plants in the 2020s?", a:"Sweden (e.g., HYBRIT project)"},
+  { round:"Current World Events", q:"Which international partnership focuses on protecting coral reefs including the Coral Triangle Initiative?", a:"Coral Triangle Initiative / various UN and regional reef programs"},
+  { round:"Current World Events", q:"Which transnational infrastructure project links Europe and Asia overland trade corridors in the 21st century?", a:"Belt and Road Initiative (China) / Trans-Eurasian rail corridors"},
+  /* Round 2 — Pop Culture (10) */
+  { round:"Pop Culture", q:"Which streaming platform popularized binge-watching culture while releasing entire seasons at once in the 2010s?", a:"Netflix"},
+  { round:"Pop Culture", q:"Which South Korean band became a global pop phenomenon blending K-pop with international charts?", a:"BTS"},
+  { round:"Pop Culture", q:"Which British fantasy-adventure series (2000s) adapted from Philip Pullman features daemons and parallel worlds?", a:"His Dark Materials"},
+  { round:"Pop Culture", q:"Which comic-book creator co-created Spider-Man and the X-Men for Marvel?", a:"Stan Lee (with collaborators like Steve Ditko, Jack Kirby)"},
+  { round:"Pop Culture", q:"Which cult 1999 film features a surreal New Orleans vampire-hunter vibe from director Jim Jarmusch?", a:"(example cults vary) — accept films like 'From Dusk Till Dawn' (1996) which is Tarantino/Rob Zombie adjacent)"},
+  { round:"Pop Culture", q:"Which 2010s TV show normalized prestige anti-heroes with a morally ambiguous lead in a small town?", a:"Breaking Bad (anti-hero trend), True Detective and others; accept: Breaking Bad for anti-hero arc" },
+  { round:"Pop Culture", q:"Which video game franchise features a post-apocalyptic world and a character named Aloy?", a:"Horizon (Horizon Zero Dawn)"},
+  { round:"Pop Culture", q:"Which director is known for surreal, colorful films like 'The Grand Budapest Hotel' and 'Moonrise Kingdom'?", a:"Wes Anderson"},
+  { round:"Pop Culture", q:"Which long-running Japanese franchise features a monster called Godzilla?", a:"Godzilla (Toho franchise)"},
+  { round:"Pop Culture", q:"Which 2014 film by Alejandro G. Iñárritu used extensive single-shot style and won Best Picture?", a:"Birdman (2014)"},
+  /* Round 3 — Cinema of the World (10) — SPECIAL */
+  { round:"Cinema of the World", q:"Which Iranian director won international acclaim for films like 'A Separation'?", a:"Asghar Farhadi"},
+  { round:"Cinema of the World", q:"Which Nigerian film industry is one of the largest by output and is popularly known as Nollywood?", a:"Nollywood (Nigeria)"},
+  { round:"Cinema of the World", q:"Which Swedish director created the 'Millennium' series adaptations and films like 'The Girl with the Dragon Tattoo'?", a:"Niels Arden Oplev (and David Fincher for later adaptation) — accept: Niels Arden Oplev / David Fincher for US version"},
+  { round:"Cinema of the World", q:"Which Japanese director is famed for 'Rashomon' and influenced global cinema?", a:"Akira Kurosawa"},
+  { round:"Cinema of the World", q:"Which Bollywood director created epic films like 'Lagaan' blending history and sport?", a:"Ashutosh Gowariker (Lagaan director)"},
+  { round:"Cinema of the World", q:"Which Mexican director made 'Roma' and 'Children of Men' (the latter via a British production)?", a:"Alfonso Cuarón (Roma)"},
+  { round:"Cinema of the World", q:"Which French New Wave director made 'Breathless' in 1960?", a:"Jean-Luc Godard"},
+  { round:"Cinema of the World", q:"Which Russian filmmaker directed 'Leviathan' (2014) and often explores state themes?", a:"Andrey Zvyagintsev"},
+  { round:"Cinema of the World", q:"Which Korean director made 'Oldboy' (2003), a landmark in South Korean cinema?", a:"Park Chan-wook"},
+  { round:"Cinema of the World", q:"Which Italian neorealist director made 'Bicycle Thieves' after WWII?", a:"Vittorio De Sica"},
+  /* Round 4 — Jeopardy!-Style (10) */
+  { round:"Jeopardy!-Style", q:"Category: Capitals — This city is the capital of Turkey.", a:"What is Ankara?"},
+  { round:"Jeopardy!-Style", q:"Category: Science — The symbol 'Na' indicates which element?", a:"What is Sodium?"},
+  { round:"Jeopardy!-Style", q:"Category: Literature — Who wrote 'Crime and Punishment'?", a:"Who is Fyodor Dostoevsky?"},
+  { round:"Jeopardy!-Style", q:"Category: Inventions — Who is credited with inventing the phonograph?", a:"Who is Thomas Edison?"},
+  { round:"Jeopardy!-Style", q:"Category: Film — Which director made 'Pan's Labyrinth'?", a:"Who is Guillermo del Toro?"},
+  { round:"Jeopardy!-Style", q:"Category: Animals — What large mammal is known for its tusks and trunk?", a:"What is the elephant?"},
+  { round:"Jeopardy!-Style", q:"Category: Geography — Which desert covers much of northern Africa?", a:"What is the Sahara Desert?"},
+  { round:"Jeopardy!-Style", q:"Category: Sports — Which country famously won the 1966 FIFA World Cup?", a:"What is England?"},
+  { round:"Jeopardy!-Style", q:"Category: Myth — Who is the Greek goddess of wisdom?", a:"Who is Athena?"},
+  { round:"Jeopardy!-Style", q:"Category: Tech — GPU stands for what?", a:"What is Graphics Processing Unit?"},
+  /* Round 5 — Important History (10) */
+  { round:"Important History", q:"Which ancient civilization built the step pyramids at Saqqara in Egypt?", a:"The Ancient Egyptians (Djoser / Step Pyramid)"},
+  { round:"Important History", q:"Which English king signed the Magna Carta in 1215?", a:"King John"},
+  { round:"Important History", q:"Which 1776 document declared independence from Britain for the United States?", a:"The Declaration of Independence"},
+  { round:"Important History", q:"Which explorer's voyages opened the sea route from Europe to India via the Cape of Good Hope?", a:"Vasco da Gama"},
+  { round:"Important History", q:"Which movement in the 19th century advocated for workers' rights and unionization across Europe?", a:"The labor movement / trade union movement"},
+  { round:"Important History", q:"Which empire's capital was Constantinople before 1453?", a:"The Byzantine Empire"},
+  { round:"Important History", q:"Which 20th-century British Prime Minister led the UK during much of WWII?", a:"Winston Churchill"},
+  { round:"Important History", q:"Which treaty in 1848 recognized the end of Mexican control over Texas and large territories in North America?", a:"Treaty of Guadalupe Hidalgo (1848)"},
+  { round:"Important History", q:"Which cultural-philosophical movement began in 18th-century Europe and emphasized science and reason?", a:"The Enlightenment"},
+  { round:"Important History", q:"Which revolutionary leader is associated with Haitian independence?", a:"Toussaint L'Ouverture / Jean-Jacques Dessalines (key figures)"}  
+
+];
+
+let currentIndex = 0;
+const card = document.getElementById('card');
+const questionText = document.getElementById('questionText');
+const answerText = document.getElementById('answerText');
+const frontTag = document.getElementById('frontTag');
+const backTag = document.getElementById('backTag');
+const roundLabel = document.getElementById('roundLabel');
+const progress = document.getElementById('progress');
+
+function render(i){
+  const it = flashcards[i];
+  frontTag.textContent = it.round;
+  backTag.textContent = it.round + " — Answer";
+  questionText.textContent = it.q;
+  answerText.textContent = it.a;
+  roundLabel.textContent = 'Round: ' + it.round;
+  progress.textContent = (i+1) + ' / ' + flashcards.length;
+  card.classList.remove('flipped');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function flip(){ card.classList.toggle('flipped'); }
+document.getElementById('flipBtn').addEventListener('click', flip);
+document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex+1)%flashcards.length; render(currentIndex); });
+document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex-1+flashcards.length)%flashcards.length; render(currentIndex); });
+card.addEventListener('click', flip);
+
+document.addEventListener('keydown',(e)=>{ 
+  if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+  if(e.key===' '||e.key==='Spacebar'){ e.preventDefault(); flip(); }
+});
+
+let sx=null;
+document.addEventListener('touchstart',e=>sx=e.changedTouches[0].screenX);
+document.addEventListener('touchend',e=>{ if(sx===null) return; const dx=e.changedTouches[0].screenX-sx; if(dx>60) document.getElementById('prevBtn').click(); if(dx<-60) document.getElementById('nextBtn').click(); sx=null; });
+
+render(0);
+</script>
+</body>
+</html>

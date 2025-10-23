@@ -7,14 +7,14 @@
 <link rel="icon" type="image/svg+xml"
   href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><text y='32' font-size='32'>🍺</text></svg>">
 <style>
-  /* Palette B — Blue & Gold */
+    /* Palette B — Blue & Gold (exact values matching your reference) */
   :root{
-    --bg:#0A52A1;
-    --accent:#D4AF37;
-    --card:#FFFFFF;
-    --cardText:#0A52A1;
-    --back:#D4AF37;
-    --backText:#052a4a;
+    --bg:#0A52A1;    /* deep blue */
+    --gold:#D4AF37;   /* gold */
+    --card:#FFFFFF;   /* white card front */
+    --cardText:#0A52A1;/* blue text on card front */
+    --back:var(--gold);/* gold back */
+    --backText:#052a4a;/* dark-blue text on gold back */
   }
   html,body{height:100%;margin:0}
   body{background:var(--bg);color:var(--cardText);font-family:Inter,Arial,sans-serif;display:flex;justify-content:center;padding:18px}

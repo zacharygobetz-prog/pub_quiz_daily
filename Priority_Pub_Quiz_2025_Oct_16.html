@@ -3,54 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Priority Pub Quiz — 2025 Oct 15</title>
+<title>Priority Pub Quiz — 2025 Oct 16</title>
 <link rel="icon" type="image/svg+xml"
   href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><text y='32' font-size='32'>🍺</text></svg>">
 <style>
-    /* Palette B — Blue & Gold (exact values matching your reference) */
+  /* Palette B — Blue & Gold */
   :root{
-    --bg:#0A52A1;    /* deep blue */
-    --gold:#D4AF37;   /* gold */
-    --card:#FFFFFF;   /* white card front */
-    --cardText:#0A52A1;/* blue text on card front */
-    --back:var(--gold);/* gold back */
-    --backText:#052a4a;/* dark-blue text on gold back */
+    --bg:#0A52A1;
+    --gold:#D4AF37;
+    --card:#FFFFFF;
+    --cardText:#0A52A1;
+    --back:var(--gold);
+    --backText:#052a4a;
   }
   html,body{height:100%;margin:0}
   body{background:var(--bg);color:var(--cardText);font-family:Inter,Arial,sans-serif;display:flex;justify-content:center;padding:18px}
   .container{width:100%;max-width:920px}
-  h1{color:var(--accent);text-align:center;margin:6px 0;font-size:1.4rem}
+  h1{color:var(--gold);text-align:center;margin:6px 0;font-size:1.4rem}
   .card-wrap{width:94%;max-width:860px;margin:18px auto;height:360px;perspective:1100px}
   .card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .58s;cursor:pointer}
   .card.flipped{transform:rotateY(180deg)}
   .front,.back{position:absolute;inset:0;padding:22px;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.35);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;backface-visibility:hidden}
   .front{background:var(--card);color:var(--cardText)}
   .back{background:var(--back);color:var(--backText);transform:rotateY(180deg)}
-  .tag{display:inline-block;padding:6px 10px;border-radius:999px;margin-bottom:12px;background:rgba(212,175,55,0.12);color:var(--accent);font-weight:700}
+  .tag{display:inline-block;padding:6px 10px;border-radius:999px;margin-bottom:12px;background:rgba(212,175,55,0.12);color:var(--gold);font-weight:700}
   .question{font-size:1.05rem;line-height:1.4;color:var(--cardText)}
   .answer{font-size:1.05rem;line-height:1.4;color:var(--backText)}
   .controls{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
   .btn{padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
-  .btn.primary{background:var(--accent);color:var(--backText)}
+  .btn.primary{background:var(--gold);color:var(--backText)}
   .btn.ghost{background:transparent;color:var(--cardText);border:1px solid rgba(255,255,255,0.06)}
   .progress{text-align:center;color:rgba(255,255,255,.95);margin-top:8px}
   .note{font-size:.86rem;color:rgba(255,255,255,.8);text-align:center;margin-top:8px}
+  @media(max-width:420px){.front,.back{padding:14px;font-size:.95rem}}
 </style>
 </head>
 <body>
   <div class="container">
-    <h1>Priority Pub Quiz — 2025 Oct 15</h1>
+    <h1>Priority Pub Quiz — 2025 Oct 16</h1>
     <div id="roundLabel" style="font-weight:800;margin-bottom:6px">Round: —</div>
 
     <div class="card-wrap">
-      <div class="card" id="card" tabindex="0">
+      <div class="card" id="card" tabindex="0" role="button" aria-pressed="false">
         <div class="front">
           <div class="tag" id="frontTag">Round</div>
-          <div class="question" id="questionText">Loading…</div>
+          <div class="question" id="question">Loading…</div>
         </div>
         <div class="back">
           <div class="tag" id="backTag">Answer</div>
-          <div class="answer" id="answerText">Loading…</div>
+          <div class="answer" id="answer">Loading…</div>
         </div>
       </div>
     </div>
@@ -62,82 +63,115 @@
     </div>
 
     <div class="progress" id="progress">0 / 0</div>
-    <div class="note">Click/tap card to flip · ← → to move · Clever + international questions.</div>
+    <div class="note">Round order: Current World Events · Global Food & Drinks · Music · Jeopardy! · Important History. Click/tap the card to flip.</div>
   </div>
 
 <script>
-const flashcards=[
-{round:"Current World Events",q:"Which international court is seated in The Hague and settles disputes between states?",a:"International Court of Justice"},
-{round:"Current World Events",q:"What is the UN agency coordinating refugee assistance?",a:"UNHCR"},
-{round:"Current World Events",q:"What 2015 accord aims to limit global warming below 2°C?",a:"The Paris Agreement"},
-{round:"Current World Events",q:"Which index ranks corruption perception globally?",a:"Transparency International CPI"},
-{round:"Current World Events",q:"What does ASEAN stand for?",a:"Association of Southeast Asian Nations"},
-{round:"Current World Events",q:"CBDC stands for what new currency type?",a:"Central Bank Digital Currency"},
-{round:"Current World Events",q:"Which agency sets global flight safety standards?",a:"ICAO – International Civil Aviation Organization"},
-{round:"Current World Events",q:"Which annual forum meets in Davos?",a:"World Economic Forum"},
-{round:"Current World Events",q:"Which body created the Sustainable Development Goals?",a:"United Nations"},
-{round:"Current World Events",q:"What group includes the International Bank for Reconstruction and Development?",a:"World Bank Group"},
-
-{round:"Pop Culture",q:"Which studio released ‘Spirited Away’ (2001)?",a:"Studio Ghibli"},
-{round:"Pop Culture",q:"Which Mexican director won Best Director for ‘The Shape of Water’?",a:"Guillermo del Toro"},
-{round:"Pop Culture",q:"Which Korean film became the first non-English Best Picture Oscar winner (2020)?",a:"Parasite (Bong Joon-ho)"},
-{round:"Pop Culture",q:"Which fashion house’s interlocking CC logo defines haute couture?",a:"Chanel"},
-{round:"Pop Culture",q:"Which HBO series about a media dynasty debuted 2018?",a:"Succession"},
-{round:"Pop Culture",q:"Which Indian film industry’s nickname fuses Mumbai + Hollywood?",a:"Bollywood"},
-{round:"Pop Culture",q:"Which 1990s sci-fi series paired Mulder and Scully?",a:"The X-Files"},
-{round:"Pop Culture",q:"‘The Miseducation of…’ belongs to whom?",a:"Lauryn Hill"},
-{round:"Pop Culture",q:"Which franchise features piloted robots called Gundam?",a:"Mobile Suit Gundam"},
-{round:"Pop Culture",q:"Which Japanese director created My Neighbor Totoro?",a:"Hayao Miyazaki"},
-
-{round:"Music",q:"Who pioneered Afrobeat and used songs as protest?",a:"Fela Kuti"},
-{round:"Music",q:"Which Irish singer blended New Age and Celtic tones in ‘Watermark’?",a:"Enya"},
-{round:"Music",q:"Which Jamaican producer fathered dub music?",a:"Lee ‘Scratch’ Perry"},
-{round:"Music",q:"Which Icelandic artist released ‘Homogenic’?",a:"Björk"},
-{round:"Music",q:"Which indie composer wrote the album ‘Illinois’?",a:"Sufjan Stevens"},
-{round:"Music",q:"Which style mixes jazz + funk + West African rhythms?",a:"Afrobeat"},
-{round:"Music",q:"Which UK band with Morrissey and Johnny Marr defined alt rock?",a:"The Smiths"},
-{round:"Music",q:"Which Brazilian genre birthed ‘The Girl from Ipanema’?",a:"Bossa Nova"},
-{round:"Music",q:"Which German band pioneered electronic music with ‘Autobahn’?",a:"Kraftwerk"},
-{round:"Music",q:"Which Portuguese fado icon is known for melancholic voice?",a:"Amália Rodrigues"},
-
-{round:"Jeopardy!",q:"Category: Capitals – This city is capital of New Zealand.",a:"What is Wellington?"},
-{round:"Jeopardy!",q:"Category: Science – Symbol ‘K’ means which element?",a:"What is Potassium?"},
-{round:"Jeopardy!",q:"Category: Literature – Author of ‘The Little Prince’?",a:"Who is Antoine de Saint-Exupéry?"},
-{round:"Jeopardy!",q:"Category: Inventions – Early radio pioneer?",a:"Who is Guglielmo Marconi?"},
-{round:"Jeopardy!",q:"Category: Film – Director of ‘Pan’s Labyrinth’?",a:"Who is Guillermo del Toro?"},
-{round:"Jeopardy!",q:"Category: Sports – Host of first FIFA World Cup (1930)?",a:"What is Uruguay?"},
-{round:"Jeopardy!",q:"Category: Language – ‘Bonjour’ belongs to what language?",a:"What is French?"},
-{round:"Jeopardy!",q:"Category: Art – Painter of ‘Mona Lisa’?",a:"Who is Leonardo da Vinci?"},
-{round:"Jeopardy!",q:"Category: Myth – Monkey god hero of Ramayana?",a:"Who is Hanuman?"},
-{round:"Jeopardy!",q:"Category: Tech – URL stands for what?",a:"What is Uniform Resource Locator?"},
-
-{round:"Important History",q:"Which conflict (1756–63) reshaped empires?",a:"Seven Years’ War"},
-{round:"Important History",q:"Who invented cuneiform writing?",a:"The Sumerians"},
-{round:"Important History",q:"First female prime minister (Sri Lanka 1960)?",a:"Sirimavo Bandaranaike"},
-{round:"Important History",q:"Which empire built Angkor Wat?",a:"Khmer Empire"},
-{round:"Important History",q:"Which dynasty built early Great Wall?",a:"Qin Dynasty"},
-{round:"Important History",q:"Inventor of movable-type printing in Europe?",a:"Johannes Gutenberg"},
-{round:"Important History",q:"1917 event that led to Bolshevik rule?",a:"October Revolution"},
-{round:"Important History",q:"Who unified Italy through volunteer armies?",a:"Giuseppe Garibaldi"},
-{round:"Important History",q:"Which ship sank in 1912 causing safety reforms?",a:"RMS Titanic"},
-{round:"Important History",q:"Which ancient library symbolized lost knowledge?",a:"Library of Alexandria"}
+const flashcards = [
+  /* Round 1 — Current World Events (10) */
+  { round:"Current World Events", q:"Which African nation launched a major continental free-trade acceleration initiative in the 2020s?", a:"Nigeria (regional initiatives led across Africa; AfCFTA is continent-wide but many national pushes like Nigeria)"},
+  { round:"Current World Events", q:"Which treaty framework coordinates Arctic cooperation among nations with polar interests?", a:"The Arctic Council (intergovernmental forum)"},
+  { round:"Current World Events", q:"Which East African country began commercial-scale geothermal expansion to power industry in the 2020s?", a:"Kenya"},
+  { round:"Current World Events", q:"Which international body declared antimicrobial resistance a major global health threat in repeated action plans?", a:"World Health Organization (WHO)"},
+  { round:"Current World Events", q:"What is the name of the global forum that convenes annually in Riyadh and other GCC cities to discuss regional economics?", a:"Davos-style regional summits exist; Gulf-focused forums and Riyadh Economic Forum — answer: Riyadh Economic Forum (example)"},
+  { round:"Current World Events", q:"Which Southeast Asian nation launched a high-speed rail link in the early 2020s connecting major cities?", a:"Thailand (projects in planning/early stages; Vietnam/Thailand projects cited)"},
+  { round:"Current World Events", q:"Which technology trend denotes the decentralization of cloud compute to devices and near-edge servers?", a:"Edge computing / distributed cloud"},
+  { round:"Current World Events", q:"Which country became widely noted for national carbon-pricing reforms in the 2020s?", a:"Canada (and EU ETS expansions; example: Canada introduced national measures)"},
+  { round:"Current World Events", q:"Which ocean-basin forum launched a major plastic cleanup taskforce in the 2020s?", a:"Various organizations (e.g., The Ocean Cleanup, regional coalitions) — acceptable: The Ocean Cleanup initiative in Pacific/Garbage Patches"},
+  { round:"Current World Events", q:"Which East Asian city has been making headlines for green hydrogen pilot projects linked to industrial ports?", a:"Osaka / Japan (and also South Korea ports; example: Osaka and ports in Japan/South Korea)"},
+  /* Round 2 — Global Food & Drinks (10) — SPECIAL */
+  { round:"Global Food & Drinks", q:"Which fermented Korean side dish is made from napa cabbage and a spicy red pepper seasoning?", a:"Kimchi"},
+  { round:"Global Food & Drinks", q:"Which Italian cheese is traditionally made from buffalo milk and often used on Neapolitan pizza?", a:"Mozzarella di Bufala"},
+  { round:"Global Food & Drinks", q:"Which Spanish cold soup made from tomatoes and cucumber is commonly served chilled?", a:"Gazpacho"},
+  { round:"Global Food & Drinks", q:"Which Japanese dish consists of vinegared rice with raw fish?", a:"Sushi (nigiri/maki, etc.)"},
+  { round:"Global Food & Drinks", q:"Which West African stew features peanut (groundnut) butter as a primary ingredient?", a:"Groundnut (peanut) stew / Maafe"},
+  { round:"Global Food & Drinks", q:"Which Mexican sauce combines chocolate with chiles and is often served over meats?", a:"Mole"},
+  { round:"Global Food & Drinks", q:"Which classic French small-plate pastry is a buttery, flaky layered dessert often filled with fruit?", a:"A tart (e.g., tarte tatin) or mille-feuille for layered; acceptable: Mille-feuille for layered pastry"},
+  { round:"Global Food & Drinks", q:"Which drink is made by fermenting tea with a SCOBY culture and has a tangy effervescence?", a:"Kombucha"},
+  { round:"Global Food & Drinks", q:"What is the name of the Ethiopian spiced coffee ceremony's flatbread often served with it?", a:"Injera (though injera is typically Ethiopian flatbread served with stews; coffee often served with snacks like sambusas)"},
+  { round:"Global Food & Drinks", q:"Which aromatic Indian spice blend often features cardamom, cinnamon, cloves and is used in chai?", a:"Garam masala (or chai masala for beverages)"},
+  /* Round 3 — Music (10) */
+  { round:"Music", q:"Which Nigerian artist is widely credited as a founder of Afrobeat?", a:"Fela Kuti"},
+  { round:"Music", q:"Which Icelandic singer collaborated with Björk's experimental pop peers and released 'Vespertine'?", a:"Björk (Vespertine is one of her albums)"},
+  { round:"Music", q:"Which British punk band released 'London Calling' in 1979?", a:"The Clash"},
+  { round:"Music", q:"Which Jamaican singer popularized reggae worldwide with 'No Woman, No Cry' and other hits?", a:"Bob Marley"},
+  { round:"Music", q:"Which electronic duo from France released the album 'Homework' and later 'Discovery'?", a:"Daft Punk"},
+  { round:"Music", q:"Which composer wrote the four violin concertos collectively called 'The Four Seasons'?", a:"Antonio Vivaldi"},
+  { round:"Music", q:"Which American jazz trumpeter led the modal masterpiece 'Kind of Blue'?", a:"Miles Davis"},
+  { round:"Music", q:"Which 2010s UK singer wrote the album '25' and had the hit 'Hello'?", a:"Adele"},
+  { round:"Music", q:"Which Cuban-born composer fused Afro-Cuban rhythms with classical orchestration (e.g., 'Cuban Overture')?", a:"George Gershwin wrote 'Cuban Overture' (American composer influenced by Cuba) — alternative: Ernesto Lecuona (Cuban composer)"},
+  { round:"Music", q:"Which sound system culture originated in Kingston, Jamaica, and influenced global DJ culture?", a:"Sound system (Jamaican) / reggae dub culture"},
+  /* Round 4 — Jeopardy!-Style (10) */
+  { round:"Jeopardy!-Style", q:"Category: Capitals — This city is the capital of Chile.", a:"What is Santiago?"},
+  { round:"Jeopardy!-Style", q:"Category: Science — H2O is the chemical formula for what?", a:"What is water?"},
+  { round:"Jeopardy!-Style", q:"Category: Literature — Who wrote 'One Hundred Years of Solitude'?", a:"Who is Gabriel García Márquez?"},
+  { round:"Jeopardy!-Style", q:"Category: Inventions — Who invented the World Wide Web?", a:"Who is Tim Berners-Lee?"},
+  { round:"Jeopardy!-Style", q:"Category: Film — Which Polish director made 'Ida' (2013)?", a:"Who is Paweł Pawlikowski?"},
+  { round:"Jeopardy!-Style", q:"Category: Animals — This mammal is known for echolocation and flight.", a:"What is a bat?"},
+  { round:"Jeopardy!-Style", q:"Category: Geography — Which strait separates Europe and Asia at Istanbul?", a:"What is the Bosporus (Bosphorus)?"},
+  { round:"Jeopardy!-Style", q:"Category: Sports — Which country hosted the 2016 Summer Olympics?", a:"What is Brazil (Rio de Janeiro)?"},
+  { round:"Jeopardy!-Style", q:"Category: Myth — Which Greek hero completed 12 labors?", a:"Who is Hercules (Heracles)?"},
+  { round:"Jeopardy!-Style", q:"Category: Tech — HTTP stands for what?", a:"What is HyperText Transfer Protocol?"},
+  /* Round 5 — Important History (10) */
+  { round:"Important History", q:"Which ancient empire built the road network including the Royal Road through Persia?", a:"The Achaemenid Empire (Persian Empire)"},
+  { round:"Important History", q:"Which 14th-century traveler wrote detailed accounts of his journeys through Asia and Africa?", a:"Ibn Battuta"},
+  { round:"Important History", q:"Which English king was defeated at the Battle of Hastings in 1066?", a:"King Harold II (defeated by William the Conqueror)"},
+  { round:"Important History", q:"Which 18th-century movement emphasized reason and individualism in Europe?", a:"The Enlightenment (Age of Enlightenment)"},
+  { round:"Important History", q:"Which 19th-century invention transformed communication across oceans with coded signals?", a:"The telegraph (and undersea telegraph cables)"},
+  { round:"Important History", q:"Which Chinese dynasty is known for the Terracotta Army?", a:"The Qin Dynasty (first Emperor Qin Shi Huang)"},
+  { round:"Important History", q:"Which treaty in 1815 attempted to restore balance of power in Europe after Napoleon?", a:"The Congress of Vienna (1814–1815 outcomes)"},
+  { round:"Important History", q:"Which 20th-century policy aimed at reconstructing Europe after WWII?", a:"The Marshall Plan (European Recovery Program)"},
+  { round:"Important History", q:"Which ancient city-state in Greece is famed for its militaristic culture?", a:"Sparta"},
+  { round:"Important History", q:"Which pre-Columbian civilization built the city of Teotihuacan?", a:"Teotihuacan culture (precise later Aztec attribution is different)"}  
 ];
 
-let i=0;
-const c=document.getElementById('card'),
-qT=document.getElementById('questionText'),
-aT=document.getElementById('answerText'),
-fT=document.getElementById('frontTag'),
-bT=document.getElementById('backTag'),
-rL=document.getElementById('roundLabel'),
-p=document.getElementById('progress');
-function render(x){const d=flashcards[x];fT.textContent=d.round;bT.textContent=d.round+' — Answer';qT.textContent=d.q;aT.textContent=d.a;rL.textContent='Round: '+d.round;p.textContent=(x+1)+' / '+flashcards.length;c.classList.remove('flipped');}
-function flip(){c.classList.toggle('flipped')}
-document.getElementById('flipBtn').addEventListener('click',flip);
-document.getElementById('nextBtn').addEventListener('click',()=>{i=(i+1)%flashcards.length;render(i)});
-document.getElementById('prevBtn').addEventListener('click',()=>{i=(i-1+flashcards.length)%flashcards.length;render(i)});
-c.addEventListener('click',flip);
-document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')document.getElementById('nextBtn').click();if(e.key==='ArrowLeft')document.getElementById('prevBtn').click();if(e.key===' '||e.key==='Spacebar'){e.preventDefault();flip();}});
+let currentIndex = 0;
+const cardEl = document.getElementById('card');
+const questionEl = document.getElementById('question');
+const answerEl = document.getElementById('answer');
+const roundLabelEl = document.getElementById('roundLabel');
+const frontTag = document.getElementById('frontTag');
+const backTag = document.getElementById('backTag');
+const progressEl = document.getElementById('progress');
+
+function render(index){
+  const it = flashcards[index];
+  frontTag.textContent = it.round;
+  backTag.textContent = it.round + ' — Answer';
+  questionEl.textContent = it.q;
+  answerEl.textContent = it.a;
+  roundLabelEl.textContent = 'Round: ' + it.round;
+  progressEl.textContent = (index+1) + ' / ' + flashcards.length;
+  cardEl.classList.remove('flipped');
+  cardEl.setAttribute('aria-pressed','false');
+}
+
+function flipCard(){
+  cardEl.classList.toggle('flipped');
+  cardEl.setAttribute('aria-pressed', String(cardEl.classList.contains('flipped')));
+}
+
+function nextCard(){ currentIndex = (currentIndex + 1) % flashcards.length; render(currentIndex); }
+function prevCard(){ currentIndex = (currentIndex - 1 + flashcards.length) % flashcards.length; render(currentIndex); }
+
+// wire controls
+document.getElementById('flipBtn').addEventListener('click', flipCard);
+document.getElementById('nextBtn').addEventListener('click', nextCard);
+document.getElementById('prevBtn').addEventListener('click', prevCard);
+cardEl.addEventListener('click', flipCard);
+
+// keyboard navigation
+window.addEventListener('keydown', (e)=>{
+  if(e.key === 'ArrowRight') nextCard();
+  if(e.key === 'ArrowLeft') prevCard();
+  if(e.key === ' ' || e.key === 'Spacebar'){ e.preventDefault(); flipCard(); }
+});
+
+// swipe
+let sx = null;
+window.addEventListener('touchstart', e=> sx = e.changedTouches[0].screenX);
+window.addEventListener('touchend', e=>{ if(sx===null) return; const dx = e.changedTouches[0].screenX - sx; if(dx>60) prevCard(); if(dx<-60) nextCard(); sx=null; });
+
 render(0);
 </script>
 </body>

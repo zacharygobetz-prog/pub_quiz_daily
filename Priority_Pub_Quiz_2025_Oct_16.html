@@ -1,74 +1,63 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Priority Pub Quiz — 2025 Oct 16</title>
-<link rel="icon" type="image/svg+xml"
-  href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><text y='32' font-size='32'>🍺</text></svg>">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Priority Pub Quiz — 2025 Oct 14</title>
 <style>
-  /* Palette B — Blue & Gold */
-  :root{
-    --bg:#0A52A1;
-    --gold:#D4AF37;
-    --card:#FFFFFF;
-    --cardText:#0A52A1;
-    --back:var(--gold);
-    --backText:#052a4a;
-  }
-  html,body{height:100%;margin:0}
-  body{background:var(--bg);color:var(--cardText);font-family:Inter,Arial,sans-serif;display:flex;justify-content:center;padding:18px}
-  .container{width:100%;max-width:920px}
-  h1{color:var(--gold);text-align:center;margin:6px 0;font-size:1.4rem}
-  .card-wrap{width:94%;max-width:860px;margin:18px auto;height:360px;perspective:1100px}
-  .card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .58s;cursor:pointer}
-  .card.flipped{transform:rotateY(180deg)}
-  .front,.back{position:absolute;inset:0;padding:22px;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.35);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;backface-visibility:hidden}
-  .front{background:var(--card);color:var(--cardText)}
-  .back{background:var(--back);color:var(--backText);transform:rotateY(180deg)}
-  .tag{display:inline-block;padding:6px 10px;border-radius:999px;margin-bottom:12px;background:rgba(212,175,55,0.12);color:var(--gold);font-weight:700}
-  .question{font-size:1.05rem;line-height:1.4;color:var(--cardText)}
-  .answer{font-size:1.05rem;line-height:1.4;color:var(--backText)}
-  .controls{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-  .btn{padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
-  .btn.primary{background:var(--gold);color:var(--backText)}
-  .btn.ghost{background:transparent;color:var(--cardText);border:1px solid rgba(255,255,255,0.06)}
-  .progress{text-align:center;color:rgba(255,255,255,.95);margin-top:8px}
-  .note{font-size:.86rem;color:rgba(255,255,255,.8);text-align:center;margin-top:8px}
-  @media(max-width:420px){.front,.back{padding:14px;font-size:.95rem}}
+body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
+.header { display:flex; justify-content:space-between; align-items:center; max-width:920px; margin:0 auto 8px; }
+.header .meta { font-size:13px; opacity:0.9; color:rgba(255,215,0,0.95) }
+.flashcard { width:90%; max-width:760px; height:340px; margin:16px auto; perspective:1100px; }
+.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.58s; cursor:pointer; }
+.card.flipped { transform:rotateY(180deg); }
+.front,.back { position:absolute; inset:0; padding:20px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35); display:flex; flex-direction:column; justify-content:center; align-items:flex-start; backface-visibility:hidden; text-align:left; font-size:1.03rem; line-height:1.35; }
+.front { background:#083055; color:#FFD700; }
+.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
+.tag { display:inline-block; background:rgba(255,215,0,0.08); color:var(--gold,#FFD700); padding:6px 10px; border-radius:999px; font-weight:700; margin-bottom:12px; }
+.controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+.btn { padding:10px 14px; border-radius:10px; border:0; font-weight:700; cursor:pointer; }
+.btn.primary { background:#FFD700; color:#001F3F; }
+.btn.ghost { background:transparent; color:#FFD700; border:1px solid rgba(255,215,0,0.08); }
+.progress { margin-top:10px; font-size:13px; color:rgba(255,215,0,0.95); }
+@media(max-width:420px){ .front,.back{ font-size:0.95rem; padding:14px } }
 </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Priority Pub Quiz — 2025 Oct 16</h1>
-    <div id="roundLabel" style="font-weight:800;margin-bottom:6px">Round: —</div>
+  <div class="header">
+    <div>
+      <h1 style="margin:0;color:#FFD700;">Priority Pub Quiz — 2025 Oct 16</h1>
+      <div class="meta">Palette B • 5 rounds × 10 questions • Witty & pop-culture infused</div>
+    </div>
+    <div class="meta">Daily pack</div>
+  </div>
 
-    <div class="card-wrap">
-      <div class="card" id="card" tabindex="0" role="button" aria-pressed="false">
-        <div class="front">
-          <div class="tag" id="frontTag">Round</div>
-          <div class="question" id="question">Loading…</div>
-        </div>
-        <div class="back">
-          <div class="tag" id="backTag">Answer</div>
-          <div class="answer" id="answer">Loading…</div>
-        </div>
+  <div id="roundLabel" style="max-width:760px;margin:8px auto;font-weight:800">Round: —</div>
+
+  <div class="flashcard" role="article" aria-live="polite">
+    <div class="card" id="card" tabindex="0" aria-pressed="false">
+      <div class="front">
+        <div class="tag" id="frontTag">Round</div>
+        <div id="questionText">Loading question…</div>
+      </div>
+      <div class="back">
+        <div class="tag" id="backTag">Answer</div>
+        <div id="answerText">Loading answer…</div>
       </div>
     </div>
-
-    <div class="controls">
-      <button class="btn ghost" id="prevBtn">◀ Prev</button>
-      <button class="btn primary" id="flipBtn">Flip</button>
-      <button class="btn ghost" id="nextBtn">Next ▶</button>
-    </div>
-
-    <div class="progress" id="progress">0 / 0</div>
-    <div class="note">Round order: Current World Events · Global Food & Drinks · Music · Jeopardy! · Important History. Click/tap the card to flip.</div>
   </div>
+
+  <div class="controls" role="group">
+    <button class="btn ghost" id="prevBtn">◀ Prev</button>
+    <button class="btn primary" id="flipBtn">Flip</button>
+    <button class="btn ghost" id="nextBtn">Next ▶</button>
+  </div>
+
+  <div class="progress" id="progress">0 / 0</div>
+  <div style="max-width:760px;margin:10px auto;color:rgba(255,215,0,0.85);font-size:12px">Tap card to flip. Use ← → keys or swipe on mobile.</div>
 
 <script>
 const flashcards = [
-  /* Round 1 — Current World Events (10) */
   { round:"Current World Events", q:"Which African nation launched a major continental free-trade acceleration initiative in the 2020s?", a:"Nigeria (regional initiatives led across Africa; AfCFTA is continent-wide but many national pushes like Nigeria)"},
   { round:"Current World Events", q:"Which treaty framework coordinates Arctic cooperation among nations with polar interests?", a:"The Arctic Council (intergovernmental forum)"},
   { round:"Current World Events", q:"Which East African country began commercial-scale geothermal expansion to power industry in the 2020s?", a:"Kenya"},
@@ -123,54 +112,45 @@ const flashcards = [
   { round:"Important History", q:"Which 20th-century policy aimed at reconstructing Europe after WWII?", a:"The Marshall Plan (European Recovery Program)"},
   { round:"Important History", q:"Which ancient city-state in Greece is famed for its militaristic culture?", a:"Sparta"},
   { round:"Important History", q:"Which pre-Columbian civilization built the city of Teotihuacan?", a:"Teotihuacan culture (precise later Aztec attribution is different)"}  
+
 ];
 
 let currentIndex = 0;
-const cardEl = document.getElementById('card');
-const questionEl = document.getElementById('question');
-const answerEl = document.getElementById('answer');
-const roundLabelEl = document.getElementById('roundLabel');
+const card = document.getElementById('card');
+const questionText = document.getElementById('questionText');
+const answerText = document.getElementById('answerText');
 const frontTag = document.getElementById('frontTag');
 const backTag = document.getElementById('backTag');
-const progressEl = document.getElementById('progress');
+const roundLabel = document.getElementById('roundLabel');
+const progress = document.getElementById('progress');
 
-function render(index){
-  const it = flashcards[index];
+function render(i){
+  const it = flashcards[i];
   frontTag.textContent = it.round;
-  backTag.textContent = it.round + ' — Answer';
-  questionEl.textContent = it.q;
-  answerEl.textContent = it.a;
-  roundLabelEl.textContent = 'Round: ' + it.round;
-  progressEl.textContent = (index+1) + ' / ' + flashcards.length;
-  cardEl.classList.remove('flipped');
-  cardEl.setAttribute('aria-pressed','false');
+  backTag.textContent = it.round + " — Answer";
+  questionText.textContent = it.q;
+  answerText.textContent = it.a;
+  roundLabel.textContent = 'Round: ' + it.round;
+  progress.textContent = (i+1) + ' / ' + flashcards.length;
+  card.classList.remove('flipped');
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function flipCard(){
-  cardEl.classList.toggle('flipped');
-  cardEl.setAttribute('aria-pressed', String(cardEl.classList.contains('flipped')));
-}
+function flip(){ card.classList.toggle('flipped'); }
+document.getElementById('flipBtn').addEventListener('click', flip);
+document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex+1)%flashcards.length; render(currentIndex); });
+document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex-1+flashcards.length)%flashcards.length; render(currentIndex); });
+card.addEventListener('click', flip);
 
-function nextCard(){ currentIndex = (currentIndex + 1) % flashcards.length; render(currentIndex); }
-function prevCard(){ currentIndex = (currentIndex - 1 + flashcards.length) % flashcards.length; render(currentIndex); }
-
-// wire controls
-document.getElementById('flipBtn').addEventListener('click', flipCard);
-document.getElementById('nextBtn').addEventListener('click', nextCard);
-document.getElementById('prevBtn').addEventListener('click', prevCard);
-cardEl.addEventListener('click', flipCard);
-
-// keyboard navigation
-window.addEventListener('keydown', (e)=>{
-  if(e.key === 'ArrowRight') nextCard();
-  if(e.key === 'ArrowLeft') prevCard();
-  if(e.key === ' ' || e.key === 'Spacebar'){ e.preventDefault(); flipCard(); }
+document.addEventListener('keydown',(e)=>{ 
+  if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+  if(e.key===' '||e.key==='Spacebar'){ e.preventDefault(); flip(); }
 });
 
-// swipe
-let sx = null;
-window.addEventListener('touchstart', e=> sx = e.changedTouches[0].screenX);
-window.addEventListener('touchend', e=>{ if(sx===null) return; const dx = e.changedTouches[0].screenX - sx; if(dx>60) prevCard(); if(dx<-60) nextCard(); sx=null; });
+let sx=null;
+document.addEventListener('touchstart',e=>sx=e.changedTouches[0].screenX);
+document.addEventListener('touchend',e=>{ if(sx===null) return; const dx=e.changedTouches[0].screenX-sx; if(dx>60) document.getElementById('prevBtn').click(); if(dx<-60) document.getElementById('nextBtn').click(); sx=null; });
 
 render(0);
 </script>

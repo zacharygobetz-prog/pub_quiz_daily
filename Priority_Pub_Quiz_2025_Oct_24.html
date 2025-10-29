@@ -1,1 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Priority Pub Quiz — 2025 Oct 24</title>
+<style>
+body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
+.header { display:flex; justify-content:space-between; align-items:center; max-width:920px; margin:0 auto 8px; }
+.header .meta { font-size:13px; opacity:0.9; color:rgba(255,215,0,0.95) }
+.flashcard { width:90%; max-width:760px; height:340px; margin:16px auto; perspective:1100px; }
+.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.58s; cursor:pointer; }
+.card.flipped { transform:rotateY(180deg); }
+.front,.back { position:absolute; inset:0; padding:20px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35); display:flex; flex-direction:column; justify-content:center; align-items:flex-start; backface-visibility:hidden; text-align:left; font-size:1.03rem; line-height:1.35; }
+.front { background:#083055; color:#FFD700; }
+.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
+.tag { display:inline-block; background:rgba(255,215,0,0.08); color:var(--gold,#FFD700); padding:6px 10px; border-radius:999px; font-weight:700; margin-bottom:12px; }
+.controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+.btn { padding:10px 14px; border-radius:10px; border:0; font-weight:700; cursor:pointer; }
+.btn.primary { background:#FFD700; color:#001F3F; }
+.btn.ghost { background:transparent; color:#FFD700; border:1px solid rgba(255,215,0,0.08); }
+.progress { margin-top:10px; font-size:13px; color:rgba(255,215,0,0.95); }
+@media(max-width:420px){ .front,.back{ font-size:0.95rem; padding:14px } }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1 style="margin:0;color:#FFD700;">Priority Pub Quiz — 2025 Oct 20</h1>
+      <div class="meta">Palette B • 5 rounds × 10 questions • Witty & pop-culture infused</div>
+    </div>
+    <div class="meta">Daily pack</div>
+  </div>
+
+  <div id="roundLabel" style="max-width:760px;margin:8px auto;font-weight:800">Round: —</div>
+
+  <div class="flashcard" role="article" aria-live="polite">
+    <div class="card" id="card" tabindex="0" aria-pressed="false">
+      <div class="front">
+        <div class="tag" id="frontTag">Round</div>
+        <div id="questionText">Loading question…</div>
+      </div>
+      <div class="back">
+        <div class="tag" id="backTag">Answer</div>
+        <div id="answerText">Loading answer…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls" role="group">
+    <button class="btn ghost" id="prevBtn">◀ Prev</button>
+    <button class="btn primary" id="flipBtn">Flip</button>
+    <button class="btn ghost" id="nextBtn">Next ▶</button>
+  </div>
+
+  <div class="progress" id="progress">0 / 0</div>
+  <div style="max-width:760px;margin:10px auto;color:rgba(255,215,0,0.85);font-size:12px">Tap card to flip. Use ← → keys or swipe on mobile.</div>
+
+<script>
+const flashcards = [
+  // Current World Events
+  { round:"Current World Events", q:"Which country unveiled the first fully recyclable commercial airplane prototype in 2025?", a:"France" },
+  { round:"Current World Events", q:"Which African leader won reelection amid record-high voter turnout in 2025?", a:"William Ruto (Kenya)" },
+  { round:"Current World Events", q:"Which global city implemented a ban on disposable vapes in 2024?", a:"London" },
+  { round:"Current World Events", q:"Which nation began offering four-day workweeks nationwide in 2025?", a:"Iceland" },
+  { round:"Current World Events", q:"Which country launched the Mars sample return mission with NASA in 2024?", a:"Japan" },
+  { round:"Current World Events", q:"Which country became the world’s top producer of electric vehicles in 2025?", a:"China" },
+  { round:"Current World Events", q:"Which South American country reintroduced jaguars to the wild for the first time in a century?", a:"Argentina" },
+  { round:"Current World Events", q:"Which major city hosted the 2025 World Expo?", a:"Osaka, Japan" },
+  { round:"Current World Events", q:"Which global sports organization celebrated its 130th anniversary in 2024?", a:"The International Olympic Committee (IOC)" },
+  { round:"Current World Events", q:"Which European country switched entirely to renewable energy for one month in 2025?", a:"Portugal" },
+
+  // Pop Culture (1960s–2020s)
+  { round:"Pop Culture (1960s–2020s)", q:"Which musician starred in the 2024 film adaptation of 'Mean Girls: The Musical'?", a:"Reneé Rapp" },
+  { round:"Pop Culture (1960s–2020s)", q:"What 1990s cartoon featured an evil genius baby named Stewie?", a:"Family Guy" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1977 sci-fi film introduced audiences to the planet Tatooine?", a:"Star Wars: Episode IV – A New Hope" },
+  { round:"Pop Culture (1960s–2020s)", q:"Who won the 2025 Oscar for Best Actor for portraying a historical dictator?", a:"Cillian Murphy (as Oppenheimer)" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which British pop artist designed album covers for The Beatles?", a:"Peter Blake" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1980s music video featured zombies dancing in sync?", a:"Michael Jackson’s 'Thriller'" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 2020s TV series follows the Roy family and their media empire?", a:"Succession" },
+  { round:"Pop Culture (1960s–2020s)", q:"Who voiced the original Darth Vader?", a:"James Earl Jones" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which iconic 1990s TV sitcom featured the Central Perk café?", a:"Friends" },
+  { round:"Pop Culture (1960s–2020s)", q:"Who hosted the first season of 'Saturday Night Live' in 1975?", a:"George Carlin" },
+
+  // Music Research Round
+  { round:"Music Research Round", q:"Which artist recorded the 2023 album 'Did You Know That There’s a Tunnel Under Ocean Blvd'?", a:"Lana Del Rey" },
+  { round:"Music Research Round", q:"Which classical composer wrote the 'Four Seasons'?", a:"Antonio Vivaldi" },
+  { round:"Music Research Round", q:"Which 1970s rock band’s logo features a tongue sticking out?", a:"The Rolling Stones" },
+  { round:"Music Research Round", q:"Which pop artist broke the record for most Grammys won in 2023?", a:"Beyoncé" },
+  { round:"Music Research Round", q:"What was the first music video played on MTV?", a:"‘Video Killed the Radio Star’ by The Buggles" },
+  { round:"Music Research Round", q:"Which composer is buried in Vienna’s Central Cemetery alongside Beethoven?", a:"Johannes Brahms" },
+  { round:"Music Research Round", q:"Which singer is known as the ‘Queen of Tejano Music’?", a:"Selena Quintanilla" },
+  { round:"Music Research Round", q:"Which hip-hop artist’s real name is Belcalis Almanzar?", a:"Cardi B" },
+  { round:"Music Research Round", q:"Which band released the 2000 hit ‘Yellow’?", a:"Coldplay" },
+  { round:"Music Research Round", q:"Which musician created the alter ego Ziggy Stardust?", a:"David Bowie" },
+
+  // Jeopardy!-Style
+  { round:"Jeopardy!-Style", q:"Category: History — This wall fell in 1989, ending an era of division in Europe.", a:"What is the Berlin Wall?" },
+  { round:"Jeopardy!-Style", q:"Category: Geography — The world’s largest desert (by area).", a:"What is Antarctica?" },
+  { round:"Jeopardy!-Style", q:"Category: Food — This Japanese dish consists of vinegared rice and seafood.", a:"What is sushi?" },
+  { round:"Jeopardy!-Style", q:"Category: Literature — The author of ‘The Handmaid’s Tale’.", a:"Who is Margaret Atwood?" },
+  { round:"Jeopardy!-Style", q:"Category: Science — This planet has the Great Red Spot.", a:"What is Jupiter?" },
+  { round:"Jeopardy!-Style", q:"Category: Sports — The only tennis player to win all four Grand Slams in a single year (1969).", a:"Who is Rod Laver?" },
+  { round:"Jeopardy!-Style", q:"Category: Film — The director of ‘Inception’.", a:"Who is Christopher Nolan?" },
+  { round:"Jeopardy!-Style", q:"Category: Technology — The first commercial web browser released in 1993.", a:"What is Mosaic?" },
+  { round:"Jeopardy!-Style", q:"Category: Politics — The first female Prime Minister of Italy.", a:"Who is Giorgia Meloni?" },
+  { round:"Jeopardy!-Style", q:"Category: Mythology — The Norse god of thunder.", a:"Who is Thor?" },
+
+  // Special Round: Wildcards & Odd Facts
+  { round:"Wildcards & Odd Facts", q:"What is the only mammal capable of true flight?", a:"The bat" },
+  { round:"Wildcards & Odd Facts", q:"Which color is most visible to the human eye?", a:"Green" },
+  { round:"Wildcards & Odd Facts", q:"What’s the rarest blood type in humans?", a:"AB Negative" },
+  { round:"Wildcards & Odd Facts", q:"Which planet spins backward compared to the others?", a:"Venus" },
+  { round:"Wildcards & Odd Facts", q:"What animal has fingerprints nearly identical to humans?", a:"Koala" },
+  { round:"Wildcards & Odd Facts", q:"What food can never spoil?", a:"Honey" },
+  { round:"Wildcards & Odd Facts", q:"What’s the only country that’s also a continent?", a:"Australia" },
+  { round:"Wildcards & Odd Facts", q:"Which word is spelled incorrectly in every dictionary?", a:"Incorrectly" },
+  { round:"Wildcards & Odd Facts", q:"Which animal’s heart is located in its head?", a:"Shrimp" },
+  { round:"Wildcards & Odd Facts", q:"Which language has the most words for 'snow'?", a:"Inuit (and several dialects thereof)" }
+
+];
+
+let currentIndex = 0;
+const card = document.getElementById('card');
+const questionText = document.getElementById('questionText');
+const answerText = document.getElementById('answerText');
+const frontTag = document.getElementById('frontTag');
+const backTag = document.getElementById('backTag');
+const roundLabel = document.getElementById('roundLabel');
+const progress = document.getElementById('progress');
+
+function render(i){
+  const it = flashcards[i];
+  frontTag.textContent = it.round;
+  backTag.textContent = it.round + " — Answer";
+  questionText.textContent = it.q;
+  answerText.textContent = it.a;
+  roundLabel.textContent = 'Round: ' + it.round;
+  progress.textContent = (i+1) + ' / ' + flashcards.length;
+  card.classList.remove('flipped');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function flip(){ card.classList.toggle('flipped'); }
+document.getElementById('flipBtn').addEventListener('click', flip);
+document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex+1)%flashcards.length; render(currentIndex); });
+document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex-1+flashcards.length)%flashcards.length; render(currentIndex); });
+card.addEventListener('click', flip);
+
+document.addEventListener('keydown',(e)=>{ 
+  if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+  if(e.key===' '||e.key==='Spacebar'){ e.preventDefault(); flip(); }
+});
+
+let sx=null;
+document.addEventListener('touchstart',e=>sx=e.changedTouches[0].screenX);
+document.addEventListener('touchend',e=>{ if(sx===null) return; const dx=e.changedTouches[0].screenX-sx; if(dx>60) document.getElementById('prevBtn').click(); if(dx<-60) document.getElementById('nextBtn').click(); sx=null; });
+
+render(0);
+</script>
+</body>
+</html>
 

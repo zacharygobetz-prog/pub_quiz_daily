@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Priority Pub Quiz — 2025 Oct 20</title>
+<title>Priority Pub Quiz — 2025 Oct 21</title>
 <style>
 body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
 .header { display:flex; justify-content:space-between; align-items:center; max-width:920px; margin:0 auto 8px; }
@@ -59,64 +59,64 @@ body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-al
 <script>
 const flashcards = [
   // Current World Events
-  { round: "Current World Events", q: "Which African nation officially joined BRICS in 2024?", a: "Egypt" },
-  { round: "Current World Events", q: "Which European country legalized same-sex marriage in 2024, becoming the 35th globally?", a: "Greece" },
-  { round: "Current World Events", q: "What Asian capital hosted the 2025 World Expo?", a: "Osaka, Japan" },
-  { round: "Current World Events", q: "Which nation re-entered UNESCO in 2023 after a long absence?", a: "The United States" },
-  { round: "Current World Events", q: "Which tech company unveiled the first consumer-grade quantum laptop concept in 2025?", a: "IBM" },
-  { round: "Current World Events", q: "Which Latin American country elected its first Indigenous female president in 2025?", a: "Bolivia" },
-  { round: "Current World Events", q: "Which European city introduced a congestion-pricing ring similar to London’s in 2024?", a: "Paris" },
-  { round: "Current World Events", q: "What global organization launched the ‘Green Skills for Youth’ initiative?", a: "UNESCO" },
-  { round: "Current World Events", q: "Which major economy phased out coal completely by 2025?", a: "The United Kingdom" },
-  { round: "Current World Events", q: "Which African country hosted the 2025 Africa Cup of Nations?", a: "Morocco" },
+  { round:"Current World Events", q:"Which country hosted COP30, the UN Climate Conference, in 2025?", a:"Brazil" },
+  { round:"Current World Events", q:"Which Asian nation debuted its first driverless high-speed rail network in 2024?", a:"China" },
+  { round:"Current World Events", q:"Which African nation launched a satellite named 'Tafiri-1' in 2025?", a:"Kenya" },
+  { round:"Current World Events", q:"Which European Union country reinstated compulsory national service in 2024?", a:"Sweden" },
+  { round:"Current World Events", q:"Which Pacific Island nation relocated its capital due to rising sea levels?", a:"Tuvalu (proposal to move digitally)" },
+  { round:"Current World Events", q:"Which global sports event will be hosted in Los Angeles in 2028?", a:"Summer Olympics" },
+  { round:"Current World Events", q:"Which country recently adopted a four-day workweek nationwide?", a:"Iceland" },
+  { round:"Current World Events", q:"Which African country introduced the Eco currency reform?", a:"Nigeria" },
+  { round:"Current World Events", q:"Which company launched the reusable rocket 'Neutron'?", a:"Rocket Lab" },
+  { round:"Current World Events", q:"Which Scandinavian capital topped 2025’s Global Sustainability Index?", a:"Copenhagen, Denmark" },
 
   // Pop Culture
-  { round: "Pop Culture (1960s–2020s)", q: "Which pop icon performed at the 2025 Super Bowl halftime show?", a: "Dua Lipa" },
-  { round: "Pop Culture (1960s–2020s)", q: "What movie won Best Picture at the 2024 Oscars?", a: "Oppenheimer" },
-  { round: "Pop Culture (1960s–2020s)", q: "Which Netflix series revived the ‘True Detective’ franchise in 2024?", a: "True Detective: Night Country" },
-  { round: "Pop Culture (1960s–2020s)", q: "Which singer released the album 'Cowboy Carter'?", a: "Beyoncé" },
-  { round: "Pop Culture (1960s–2020s)", q: "What 1970s band inspired the 2020s series 'Daisy Jones & The Six'?", a: "Fleetwood Mac" },
-  { round: "Pop Culture (1960s–2020s)", q: "Which actor voiced Spider-Man in 'Across the Spider-Verse'?", a: "Shameik Moore" },
-  { round: "Pop Culture (1960s–2020s)", q: "What 1990s sitcom featured the fictional band ‘The Be Sharps’?", a: "The Simpsons" },
-  { round: "Pop Culture (1960s–2020s)", q: "Which 1980s movie introduced the line ‘Nobody puts Baby in a corner’?", a: "Dirty Dancing" },
-  { round: "Pop Culture (1960s–2020s)", q: "Which director created 'Barbie' (2023)?", a: "Greta Gerwig" },
-  { round: "Pop Culture (1960s–2020s)", q: "Which superhero made his MCU debut in 'Black Panther: Wakanda Forever'?", a: "Namor" },
+  { round:"Pop Culture (1960s–2020s)", q:"Who played Wednesday Addams in Netflix’s 'Wednesday'?", a:"Jenna Ortega" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which show won Best Drama at the 2024 Emmys?", a:"Succession" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1980s movie featured a time-traveling DeLorean?", a:"Back to the Future" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which film franchise features the planet Pandora?", a:"Avatar" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which British actor portrayed Doctor Who in 2023’s anniversary specials?", a:"David Tennant" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1999 sci-fi film starred Keanu Reeves as Neo?", a:"The Matrix" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which animated show follows the Belcher family?", a:"Bob’s Burgers" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which director created 'The French Dispatch'?", a:"Wes Anderson" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which HBO show depicts a fungal apocalypse?", a:"The Last of Us" },
+  { round:"Pop Culture (1960s–2020s)", q:"Who played Elvis in Baz Luhrmann’s 2022 biopic?", a:"Austin Butler" },
 
   // Music Research Round
-  { round: "Music Research Round", q: "Which punk band released 'London Calling'?", a: "The Clash" },
-  { round: "Music Research Round", q: "Which composer wrote the opera 'Carmen'?", a: "Georges Bizet" },
-  { round: "Music Research Round", q: "Which artist broke the record for most streamed song in Spotify history with 'Blinding Lights'?", a: "The Weeknd" },
-  { round: "Music Research Round", q: "Which classical composer became deaf yet continued to write symphonies?", a: "Ludwig van Beethoven" },
-  { round: "Music Research Round", q: "Which K-pop group debuted with 'Black Mamba'?", a: "aespa" },
-  { round: "Music Research Round", q: "Who sang 'Fast Car' — later revived by Luke Combs?", a: "Tracy Chapman" },
-  { round: "Music Research Round", q: "Which artist’s album ‘The Dark Side of the Moon’ spent over 970 weeks on Billboard 200?", a: "Pink Floyd" },
-  { round: "Music Research Round", q: "Which jazz trumpeter recorded 'Kind of Blue'?", a: "Miles Davis" },
-  { round: "Music Research Round", q: "Which Italian composer wrote the ‘Four Seasons’?", a: "Antonio Vivaldi" },
-  { round: "Music Research Round", q: "Which song was the first music video ever played on MTV?", a: "Video Killed the Radio Star – The Buggles" },
+  { round:"Music Research Round", q:"Which artist released the album '30' in 2021?", a:"Adele" },
+  { round:"Music Research Round", q:"Which rock band is known for the 1975 hit 'Bohemian Rhapsody'?", a:"Queen" },
+  { round:"Music Research Round", q:"Which composer wrote 'The Rite of Spring'?", a:"Igor Stravinsky" },
+  { round:"Music Research Round", q:"Which band released the 2023 album 'Hackney Diamonds'?", a:"The Rolling Stones" },
+  { round:"Music Research Round", q:"Which artist sang 'Paint It Black'?", a:"The Rolling Stones" },
+  { round:"Music Research Round", q:"Which pop star’s fans are known as ‘Swifties’?", a:"Taylor Swift" },
+  { round:"Music Research Round", q:"Which K-pop group released 'Butter' in 2021?", a:"BTS" },
+  { round:"Music Research Round", q:"Which genre combines reggae rhythms and hip-hop?", a:"Reggaeton" },
+  { round:"Music Research Round", q:"Who composed the 'Star Wars' soundtrack?", a:"John Williams" },
+  { round:"Music Research Round", q:"Which rock legend was nicknamed 'The Boss'?", a:"Bruce Springsteen" },
 
   // Jeopardy!-Style
-  { round: "Jeopardy!-Style", q: "Category: Geography — This is the only country that’s also a continent.", a: "What is Australia?" },
-  { round: "Jeopardy!-Style", q: "Category: Food — This Italian dish’s name means ‘cooked dough’.", a: "What is pasta?" },
-  { round: "Jeopardy!-Style", q: "Category: Film — He played Jack in 'Titanic'.", a: "Who is Leonardo DiCaprio?" },
-  { round: "Jeopardy!-Style", q: "Category: Literature — She wrote 'Pride and Prejudice'.", a: "Who is Jane Austen?" },
-  { round: "Jeopardy!-Style", q: "Category: Science — The Earth’s outermost layer is called this.", a: "What is the crust?" },
-  { round: "Jeopardy!-Style", q: "Category: Sports — He’s known as 'The Greatest' in boxing history.", a: "Who is Muhammad Ali?" },
-  { round: "Jeopardy!-Style", q: "Category: Tech — The first iPhone was released this year.", a: "What is 2007?" },
-  { round: "Jeopardy!-Style", q: "Category: Art — 'The Persistence of Memory' features melting clocks by this artist.", a: "Who is Salvador Dalí?" },
-  { round: "Jeopardy!-Style", q: "Category: Mythology — The Greek god of the sea.", a: "Who is Poseidon?" },
-  { round: "Jeopardy!-Style", q: "Category: Space — This planet is nicknamed the Red Planet.", a: "What is Mars?" },
+  { round:"Jeopardy!-Style", q:"Category: Geography — This country has the most official languages.", a:"What is South Africa?" },
+  { round:"Jeopardy!-Style", q:"Category: Science — The chemical symbol for gold.", a:"What is Au?" },
+  { round:"Jeopardy!-Style", q:"Category: Books — 'The Old Man and the Sea' author.", a:"Who is Ernest Hemingway?" },
+  { round:"Jeopardy!-Style", q:"Category: Sports — This country hosted the 2022 FIFA World Cup.", a:"What is Qatar?" },
+  { round:"Jeopardy!-Style", q:"Category: Mythology — The Norse god of thunder.", a:"Who is Thor?" },
+  { round:"Jeopardy!-Style", q:"Category: Art — Painter of 'The Night Watch'.", a:"Who is Rembrandt?" },
+  { round:"Jeopardy!-Style", q:"Category: History — Year the Berlin Wall fell.", a:"What is 1989?" },
+  { round:"Jeopardy!-Style", q:"Category: Film — Director of 'Pulp Fiction'.", a:"Who is Quentin Tarantino?" },
+  { round:"Jeopardy!-Style", q:"Category: Food — The Italian word for ‘dough’ used in pizza.", a:"What is pasta or impasto?" },
+  { round:"Jeopardy!-Style", q:"Category: Technology — The acronym for artificial intelligence.", a:"What is AI?" },
 
-  // Special Round: Global Cuisine & Culture
-  { round: "Global Cuisine & Culture", q: "What Japanese dish consists of vinegared rice and seafood?", a: "Sushi" },
-  { round: "Global Cuisine & Culture", q: "Which Middle Eastern dip is made from chickpeas and tahini?", a: "Hummus" },
-  { round: "Global Cuisine & Culture", q: "In Italy, 'gelato' refers to what dessert?", a: "Ice cream" },
-  { round: "Global Cuisine & Culture", q: "Which French pastry is known for its flaky, buttery layers?", a: "Croissant" },
-  { round: "Global Cuisine & Culture", q: "Which country is known for kimchi?", a: "South Korea" },
-  { round: "Global Cuisine & Culture", q: "What spice is derived from the crocus flower?", a: "Saffron" },
-  { round: "Global Cuisine & Culture", q: "Which country celebrates Diwali as a major festival?", a: "India" },
-  { round: "Global Cuisine & Culture", q: "What is the national drink of Argentina, shared socially through a metal straw?", a: "Maté" },
-  { round: "Global Cuisine & Culture", q: "Which Mediterranean country is famous for baklava?", a: "Greece (and also Turkey)" },
-  { round: "Global Cuisine & Culture", q: "Which Latin American staple food is made from ground maize dough?", a: "Tortilla" }  
+  // Special Round: Film & Television Around the World
+  { round:"Film & Television Around the World", q:"Which South Korean film won the Palme d’Or in 2019?", a:"Parasite" },
+  { round:"Film & Television Around the World", q:"Which French actress starred in 'Amélie'?", a:"Audrey Tautou" },
+  { round:"Film & Television Around the World", q:"Which Indian film became the first to win an Oscar for Best Original Song with 'Naatu Naatu'?", a:"RRR" },
+  { round:"Film & Television Around the World", q:"Which Spanish series popularized red jumpsuits and Dali masks?", a:"Money Heist (La Casa de Papel)" },
+  { round:"Film & Television Around the World", q:"Which British show introduced the character Sherlock played by Benedict Cumberbatch?", a:"Sherlock" },
+  { round:"Film & Television Around the World", q:"Which Japanese animated film became the highest-grossing anime globally?", a:"Demon Slayer: Mugen Train" },
+  { round:"Film & Television Around the World", q:"Which German series featured time loops and the town of Winden?", a:"Dark" },
+  { round:"Film & Television Around the World", q:"Which Canadian sitcom popularized the phrase 'Ew, David'?", a:"Schitt’s Creek" },
+  { round:"Film & Television Around the World", q:"Which Nigerian film industry is the world’s second largest by output?", a:"Nollywood" },
+  { round:"Film & Television Around the World", q:"Which country produced the hit Netflix thriller 'Squid Game'?", a:"South Korea" }
 
 ];
 

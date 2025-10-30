@@ -1,1 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Priority Pub Quiz — 2025 Oct 28</title>
+<style>
+body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
+.header { display:flex; justify-content:space-between; align-items:center; max-width:920px; margin:0 auto 8px; }
+.header .meta { font-size:13px; opacity:0.9; color:rgba(255,215,0,0.95) }
+.flashcard { width:90%; max-width:760px; height:340px; margin:16px auto; perspective:1100px; }
+.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.58s; cursor:pointer; }
+.card.flipped { transform:rotateY(180deg); }
+.front,.back { position:absolute; inset:0; padding:20px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35); display:flex; flex-direction:column; justify-content:center; align-items:flex-start; backface-visibility:hidden; text-align:left; font-size:1.03rem; line-height:1.35; }
+.front { background:#083055; color:#FFD700; }
+.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
+.tag { display:inline-block; background:rgba(255,215,0,0.08); color:var(--gold,#FFD700); padding:6px 10px; border-radius:999px; font-weight:700; margin-bottom:12px; }
+.controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+.btn { padding:10px 14px; border-radius:10px; border:0; font-weight:700; cursor:pointer; }
+.btn.primary { background:#FFD700; color:#001F3F; }
+.btn.ghost { background:transparent; color:#FFD700; border:1px solid rgba(255,215,0,0.08); }
+.progress { margin-top:10px; font-size:13px; color:rgba(255,215,0,0.95); }
+@media(max-width:420px){ .front,.back{ font-size:0.95rem; padding:14px } }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1 style="margin:0;color:#FFD700;">Priority Pub Quiz — 2025 Oct 28</h1>
+      <div class="meta">Palette B • 5 rounds × 10 questions • Witty & pop-culture infused</div>
+    </div>
+    <div class="meta">Daily pack</div>
+  </div>
 
+  <div id="roundLabel" style="max-width:760px;margin:8px auto;font-weight:800">Round: —</div>
+
+  <div class="flashcard" role="article" aria-live="polite">
+    <div class="card" id="card" tabindex="0" aria-pressed="false">
+      <div class="front">
+        <div class="tag" id="frontTag">Round</div>
+        <div id="questionText">Loading question…</div>
+      </div>
+      <div class="back">
+        <div class="tag" id="backTag">Answer</div>
+        <div id="answerText">Loading answer…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls" role="group">
+    <button class="btn ghost" id="prevBtn">◀ Prev</button>
+    <button class="btn primary" id="flipBtn">Flip</button>
+    <button class="btn ghost" id="nextBtn">Next ▶</button>
+  </div>
+
+  <div class="progress" id="progress">0 / 0</div>
+  <div style="max-width:760px;margin:10px auto;color:rgba(255,215,0,0.85);font-size:12px">Tap card to flip. Use ← → keys or swipe on mobile.</div>
+
+<script>
+const flashcards = [
+  // Current World Events
+  { round:"Current World Events", q:"Which European country’s 2025 election led to a coalition called 'The Unity Cabinet'?", a:"France" },
+  { round:"Current World Events", q:"Which African country announced a successful malaria vaccine rollout in 2025?", a:"Ghana" },
+  { round:"Current World Events", q:"Which Asian nation hosted the 2025 World Expo focusing on ‘Future Society for Our Lives’?", a:"Japan (Osaka)" },
+  { round:"Current World Events", q:"Which country legalized same-sex marriage in 2025, becoming the first in its region to do so?", a:"Thailand" },
+  { round:"Current World Events", q:"Which world leader delivered the 'Blue Planet Economy' speech at COP30?", a:"Luiz Inácio Lula da Silva (Brazil)" },
+  { round:"Current World Events", q:"Which small island nation achieved net-negative carbon emissions in 2025?", a:"Bhutan" },
+  { round:"Current World Events", q:"Which global organization launched the 'Ocean Decade' sustainability initiative?", a:"UNESCO" },
+  { round:"Current World Events", q:"Which African nation joined BRICS in 2024?", a:"Ethiopia" },
+  { round:"Current World Events", q:"Which European nation implemented a digital Euro pilot program in 2025?", a:"Germany" },
+  { round:"Current World Events", q:"Which nation’s Prime Minister is Keir Starmer?", a:"United Kingdom" },
+
+  // Pop Culture (1960s–2020s)
+  { round:"Pop Culture (1960s–2020s)", q:"Which 2023 film told the intertwined story of Oppenheimer and the atomic age?", a:"Oppenheimer" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which TV series popularized the phrase 'Winter is Coming'?", a:"Game of Thrones" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which director created 'Pulp Fiction' and 'Kill Bill'?", a:"Quentin Tarantino" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which pop artist painted 'Marilyn Diptych'?", a:"Andy Warhol" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 2020s singer’s real name is Stefani Germanotta?", a:"Lady Gaga" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which video game series is set in a post-apocalyptic wasteland with Vault Dwellers?", a:"Fallout" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1975 film featured the line 'You’re gonna need a bigger boat'?", a:"Jaws" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1980s singer became known as 'The Material Girl'?", a:"Madonna" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which painter inspired the art style of the film 'Loving Vincent'?", a:"Vincent van Gogh" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 2024 Grammy performance featured a duet between Elton John and Harry Styles?", a:"‘Tiny Dancer’ (special collaboration)" },
+
+  // Music Research Round
+  { round:"Music Research Round", q:"Which composer created 'The Marriage of Figaro'?", a:"Wolfgang Amadeus Mozart" },
+  { round:"Music Research Round", q:"Which 1970s rock opera by The Who became a film?", a:"Tommy" },
+  { round:"Music Research Round", q:"Which soul legend sang 'What’s Going On'?", a:"Marvin Gaye" },
+  { round:"Music Research Round", q:"Which 19th-century composer’s works include the 'New World Symphony'?", a:"Antonín Dvořák" },
+  { round:"Music Research Round", q:"Which indie band released 'A Brief Inquiry into Online Relationships'?", a:"The 1975" },
+  { round:"Music Research Round", q:"Which Baroque composer wrote 'Water Music'?", a:"George Frideric Handel" },
+  { round:"Music Research Round", q:"Which jazz icon was nicknamed 'The First Lady of Song'?", a:"Ella Fitzgerald" },
+  { round:"Music Research Round", q:"Which 1990s rock band fronted by Thom Yorke released 'OK Computer'?", a:"Radiohead" },
+  { round:"Music Research Round", q:"Which 20th-century composer wrote 'Boléro'?", a:"Maurice Ravel" },
+  { round:"Music Research Round", q:"Which 2020s singer recorded the album 'Renaissance'?", a:"Beyoncé" },
+
+  // Jeopardy!-Style
+  { round:"Jeopardy!-Style", q:"Category: Geography — This African lake is the largest by surface area.", a:"What is Lake Victoria?" },
+  { round:"Jeopardy!-Style", q:"Category: Science — The periodic table element with symbol 'Au'.", a:"What is gold?" },
+  { round:"Jeopardy!-Style", q:"Category: History — This empire was ruled by Genghis Khan.", a:"What is the Mongol Empire?" },
+  { round:"Jeopardy!-Style", q:"Category: Literature — The author of 'The Great Gatsby'.", a:"Who is F. Scott Fitzgerald?" },
+  { round:"Jeopardy!-Style", q:"Category: Art — The artist who painted 'The School of Athens'.", a:"Who is Raphael?" },
+  { round:"Jeopardy!-Style", q:"Category: Mythology — The Roman equivalent of the Greek god Hermes.", a:"Who is Mercury?" },
+  { round:"Jeopardy!-Style", q:"Category: Film — The movie that coined the term 'red pill' vs 'blue pill'.", a:"What is The Matrix?" },
+  { round:"Jeopardy!-Style", q:"Category: Architecture — The Parisian structure completed for the 1889 World’s Fair.", a:"What is the Eiffel Tower?" },
+  { round:"Jeopardy!-Style", q:"Category: Politics — The first female Prime Minister of Israel.", a:"Who is Golda Meir?" },
+  { round:"Jeopardy!-Style", q:"Category: Exploration — The first person to circumnavigate the globe.", a:"Who is Ferdinand Magellan?" },
+
+  // Special Round: Civilization & Culture
+  { round:"Civilization & Culture", q:"Which ancient civilization built Machu Picchu?", a:"The Inca Empire" },
+  { round:"Civilization & Culture", q:"Which Chinese dynasty began the Great Wall’s construction?", a:"The Qin Dynasty" },
+  { round:"Civilization & Culture", q:"Which ancient philosopher taught Alexander the Great?", a:"Aristotle" },
+  { round:"Civilization & Culture", q:"Which empire was centered in modern-day Istanbul?", a:"The Byzantine Empire" },
+  { round:"Civilization & Culture", q:"Which Renaissance figure painted 'The Last Supper'?", a:"Leonardo da Vinci" },
+  { round:"Civilization & Culture", q:"Which empire’s capital was Tenochtitlán?", a:"The Aztec Empire" },
+  { round:"Civilization & Culture", q:"Which language was the administrative tongue of the Roman Empire?", a:"Latin" },
+  { round:"Civilization & Culture", q:"Which African kingdom was known for its bronze sculptures in Benin City?", a:"The Kingdom of Benin" },
+  { round:"Civilization & Culture", q:"Which ancient wonder was located in Alexandria, Egypt?", a:"The Lighthouse of Alexandria" },
+  { round:"Civilization & Culture", q:"Which region was the cradle of civilization between the Tigris and Euphrates Rivers?", a:"Mesopotamia" }
+];
+
+let currentIndex = 0;
+const card = document.getElementById('card');
+const questionText = document.getElementById('questionText');
+const answerText = document.getElementById('answerText');
+const frontTag = document.getElementById('frontTag');
+const backTag = document.getElementById('backTag');
+const roundLabel = document.getElementById('roundLabel');
+const progress = document.getElementById('progress');
+
+function render(i){
+  const it = flashcards[i];
+  frontTag.textContent = it.round;
+  backTag.textContent = it.round + " — Answer";
+  questionText.textContent = it.q;
+  answerText.textContent = it.a;
+  roundLabel.textContent = 'Round: ' + it.round;
+  progress.textContent = (i+1) + ' / ' + flashcards.length;
+  card.classList.remove('flipped');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function flip(){ card.classList.toggle('flipped'); }
+document.getElementById('flipBtn').addEventListener('click', flip);
+document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex+1)%flashcards.length; render(currentIndex); });
+document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex-1+flashcards.length)%flashcards.length; render(currentIndex); });
+card.addEventListener('click', flip);
+
+document.addEventListener('keydown',(e)=>{ 
+  if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+  if(e.key===' '||e.key==='Spacebar'){ e.preventDefault(); flip(); }
+});
+
+let sx=null;
+document.addEventListener('touchstart',e=>sx=e.changedTouches[0].screenX);
+document.addEventListener('touchend',e=>{ if(sx===null) return; const dx=e.changedTouches[0].screenX-sx; if(dx>60) document.getElementById('prevBtn').click(); if(dx<-60) document.getElementById('nextBtn').click(); sx=null; });
+
+render(0);
+</script>
+</body>
+</html>

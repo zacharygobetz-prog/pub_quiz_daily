@@ -1,1 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Priority Pub Quiz — 2025 Oct 31</title>
+<style>
+body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
+.header { display:flex; justify-content:space-between; align-items:center; max-width:920px; margin:0 auto 8px; }
+.header .meta { font-size:13px; opacity:0.9; color:rgba(255,215,0,0.95) }
+.flashcard { width:90%; max-width:760px; height:340px; margin:16px auto; perspective:1100px; }
+.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.58s; cursor:pointer; }
+.card.flipped { transform:rotateY(180deg); }
+.front,.back { position:absolute; inset:0; padding:20px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35); display:flex; flex-direction:column; justify-content:center; align-items:flex-start; backface-visibility:hidden; text-align:left; font-size:1.03rem; line-height:1.35; }
+.front { background:#083055; color:#FFD700; }
+.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
+.tag { display:inline-block; background:rgba(255,215,0,0.08); color:var(--gold,#FFD700); padding:6px 10px; border-radius:999px; font-weight:700; margin-bottom:12px; }
+.controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+.btn { padding:10px 14px; border-radius:10px; border:0; font-weight:700; cursor:pointer; }
+.btn.primary { background:#FFD700; color:#001F3F; }
+.btn.ghost { background:transparent; color:#FFD700; border:1px solid rgba(255,215,0,0.08); }
+.progress { margin-top:10px; font-size:13px; color:rgba(255,215,0,0.95); }
+@media(max-width:420px){ .front,.back{ font-size:0.95rem; padding:14px } }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1 style="margin:0;color:#FFD700;">Priority Pub Quiz — 2025 Oct 31</h1>
+      <div class="meta">Palette B • 5 rounds × 10 questions • Witty & pop-culture infused</div>
+    </div>
+    <div class="meta">Daily pack</div>
+  </div>
 
+  <div id="roundLabel" style="max-width:760px;margin:8px auto;font-weight:800">Round: —</div>
+
+  <div class="flashcard" role="article" aria-live="polite">
+    <div class="card" id="card" tabindex="0" aria-pressed="false">
+      <div class="front">
+        <div class="tag" id="frontTag">Round</div>
+        <div id="questionText">Loading question…</div>
+      </div>
+      <div class="back">
+        <div class="tag" id="backTag">Answer</div>
+        <div id="answerText">Loading answer…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls" role="group">
+    <button class="btn ghost" id="prevBtn">◀ Prev</button>
+    <button class="btn primary" id="flipBtn">Flip</button>
+    <button class="btn ghost" id="nextBtn">Next ▶</button>
+  </div>
+
+  <div class="progress" id="progress">0 / 0</div>
+  <div style="max-width:760px;margin:10px auto;color:rgba(255,215,0,0.85);font-size:12px">Tap card to flip. Use ← → keys or swipe on mobile.</div>
+
+<script>
+const flashcards = [
+  // Current World Events
+  { round:"Current World Events", q:"Which country legalized psychedelic therapy nationwide in 2025?", a:"Australia" },
+  { round:"Current World Events", q:"Which world leader dressed as Shrek for a charity Halloween event?", a:"Justin Trudeau" },
+  { round:"Current World Events", q:"Which global company announced a real-time AI Halloween costume generator in 2025?", a:"Adobe" },
+  { round:"Current World Events", q:"Which European city installed holographic ghosts as part of its sustainability campaign?", a:"Prague" },
+  { round:"Current World Events", q:"Which country hosted the 2025 'Festival of Lights' coinciding with Halloween weekend?", a:"India (Diwali overlap)" },
+  { round:"Current World Events", q:"Which country tested its first self-driving hearse as a tech-art project?", a:"Japan" },
+  { round:"Current World Events", q:"Which American city revived its 1970s 'Village Halloween Parade' after a five-year hiatus?", a:"New York City" },
+  { round:"Current World Events", q:"Which nation unveiled an official 'Museum of Mischief' in 2025?", a:"Scotland" },
+  { round:"Current World Events", q:"Which major beverage brand launched glow-in-the-dark cans for Halloween?", a:"Coca-Cola" },
+  { round:"Current World Events", q:"Which African country announced a national holiday honoring storytellers and folklore?", a:"Ghana" },
+
+  // Pop Culture (1960s–2020s)
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1998 film features teenage witches using a spellbook of 'Practical Magic'?", a:"Practical Magic" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which Disney villain sings 'Poor Unfortunate Souls'?", a:"Ursula (The Little Mermaid)" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which fantasy author created the word 'Muggle'?", a:"J.K. Rowling" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1984 film featured the line 'There can be only one'?", a:"Highlander" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which streaming show stars Elizabeth Olsen as a reality-warping superhero?", a:"WandaVision" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which rock band wrote 'Sympathy for the Devil'?", a:"The Rolling Stones" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 2020s film revived witches from the Salem trials in a modern feminist context?", a:"The Witches of Eastwick (Remake)" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1971 film famously featured the words 'I am your father'?", a:"Star Wars: The Empire Strikes Back" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which singer adopted the onstage persona 'The Goblin King'?", a:"David Bowie" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which Netflix series centered on a teenage half-witch named Sabrina?", a:"The Chilling Adventures of Sabrina" },
+
+  // Music Research Round
+  { round:"Music Research Round", q:"Which composer wrote 'A Night on Bald Mountain'?", a:"Modest Mussorgsky" },
+  { round:"Music Research Round", q:"Which 2020s pop star recorded the hit 'Vampire'?", a:"Olivia Rodrigo" },
+  { round:"Music Research Round", q:"Which band wrote the hit 'People Are Strange'?", a:"The Doors" },
+  { round:"Music Research Round", q:"Which classical piece opens with eerie violins mimicking flying witches?", a:"Danse Macabre" },
+  { round:"Music Research Round", q:"Which movie features the song 'This Is Halloween'?", a:"The Nightmare Before Christmas" },
+  { round:"Music Research Round", q:"Which artist released the 1982 Halloween anthem 'Thriller'?", a:"Michael Jackson" },
+  { round:"Music Research Round", q:"Which horror film’s theme was composed by its own director?", a:"John Carpenter’s Halloween" },
+  { round:"Music Research Round", q:"Which gothic rock band performed 'Bela Lugosi’s Dead'?", a:"Bauhaus" },
+  { round:"Music Research Round", q:"Which 1990s grunge icon sang 'Heart-Shaped Box'?", a:"Kurt Cobain (Nirvana)" },
+  { round:"Music Research Round", q:"Which composer wrote the score for 'The Exorcist'?", a:"Mike Oldfield ('Tubular Bells')" },
+
+  // Jeopardy!-Style
+  { round:"Jeopardy!-Style", q:"Category: Magic — The word 'abracadabra' was first used in this ancient language.", a:"What is Aramaic?" },
+  { round:"Jeopardy!-Style", q:"Category: Mythology — The Norse trickster god.", a:"Who is Loki?" },
+  { round:"Jeopardy!-Style", q:"Category: Film — The 2006 movie about rival magicians.", a:"What is The Prestige?" },
+  { round:"Jeopardy!-Style", q:"Category: History — The real-life 'Witchfinder General' in 17th-century England.", a:"Who is Matthew Hopkins?" },
+  { round:"Jeopardy!-Style", q:"Category: Pop Culture — The Hogwarts house known for ambition and cunning.", a:"What is Slytherin?" },
+  { round:"Jeopardy!-Style", q:"Category: Science — The illusion of seeing water on a hot road is called this.", a:"What is a mirage?" },
+  { round:"Jeopardy!-Style", q:"Category: Literature — Author of 'The Picture of Dorian Gray.'", a:"Who is Oscar Wilde?" },
+  { round:"Jeopardy!-Style", q:"Category: Art — Artist known for melting clocks.", a:"Who is Salvador Dalí?" },
+  { round:"Jeopardy!-Style", q:"Category: Games — The first video game to feature ghosts chasing the player.", a:"What is Pac-Man?" },
+  { round:"Jeopardy!-Style", q:"Category: Folklore — The headless rider from Washington Irving’s tale.", a:"Who is the Headless Horseman?" },
+
+  // Special Round: Trick or Trivia
+  { round:"Trick or Trivia", q:"What can travel around the world while staying in one corner?", a:"A postage stamp" },
+  { round:"Trick or Trivia", q:"If you throw a red stone into the blue sea, what does it become?", a:"Wet" },
+  { round:"Trick or Trivia", q:"Which spooky month has 28 days?", a:"All of them" },
+  { round:"Trick or Trivia", q:"If a witch’s cat has nine lives, how many tails?", a:"One" },
+  { round:"Trick or Trivia", q:"What room can no one enter?", a:"A mushroom" },
+  { round:"Trick or Trivia", q:"What monster plays tricks on Halloween?", a:"Prank-enstein" },
+  { round:"Trick or Trivia", q:"Which instrument do skeletons play?", a:"The trom-bone" },
+  { round:"Trick or Trivia", q:"What’s a ghost’s favorite dessert?", a:"I scream" },
+  { round:"Trick or Trivia", q:"Why didn’t the vampire have any friends?", a:"He was a pain in the neck" },
+  { round:"Trick or Trivia", q:"What type of dog does Dracula own?", a:"A bloodhound" }
+
+];
+
+let currentIndex = 0;
+const card = document.getElementById('card');
+const questionText = document.getElementById('questionText');
+const answerText = document.getElementById('answerText');
+const frontTag = document.getElementById('frontTag');
+const backTag = document.getElementById('backTag');
+const roundLabel = document.getElementById('roundLabel');
+const progress = document.getElementById('progress');
+
+function render(i){
+  const it = flashcards[i];
+  frontTag.textContent = it.round;
+  backTag.textContent = it.round + " — Answer";
+  questionText.textContent = it.q;
+  answerText.textContent = it.a;
+  roundLabel.textContent = 'Round: ' + it.round;
+  progress.textContent = (i+1) + ' / ' + flashcards.length;
+  card.classList.remove('flipped');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function flip(){ card.classList.toggle('flipped'); }
+document.getElementById('flipBtn').addEventListener('click', flip);
+document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex+1)%flashcards.length; render(currentIndex); });
+document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex-1+flashcards.length)%flashcards.length; render(currentIndex); });
+card.addEventListener('click', flip);
+
+document.addEventListener('keydown',(e)=>{ 
+  if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+  if(e.key===' '||e.key==='Spacebar'){ e.preventDefault(); flip(); }
+});
+
+let sx=null;
+document.addEventListener('touchstart',e=>sx=e.changedTouches[0].screenX);
+document.addEventListener('touchend',e=>{ if(sx===null) return; const dx=e.changedTouches[0].screenX-sx; if(dx>60) document.getElementById('prevBtn').click(); if(dx<-60) document.getElementById('nextBtn').click(); sx=null; });
+
+render(0);
+</script>
+</body>
+</html>

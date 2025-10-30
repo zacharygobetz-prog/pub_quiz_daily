@@ -1,1 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Priority Pub Quiz — 2025 Oct 30</title>
+<style>
+body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
+.header { display:flex; justify-content:space-between; align-items:center; max-width:920px; margin:0 auto 8px; }
+.header .meta { font-size:13px; opacity:0.9; color:rgba(255,215,0,0.95) }
+.flashcard { width:90%; max-width:760px; height:340px; margin:16px auto; perspective:1100px; }
+.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.58s; cursor:pointer; }
+.card.flipped { transform:rotateY(180deg); }
+.front,.back { position:absolute; inset:0; padding:20px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35); display:flex; flex-direction:column; justify-content:center; align-items:flex-start; backface-visibility:hidden; text-align:left; font-size:1.03rem; line-height:1.35; }
+.front { background:#083055; color:#FFD700; }
+.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
+.tag { display:inline-block; background:rgba(255,215,0,0.08); color:var(--gold,#FFD700); padding:6px 10px; border-radius:999px; font-weight:700; margin-bottom:12px; }
+.controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+.btn { padding:10px 14px; border-radius:10px; border:0; font-weight:700; cursor:pointer; }
+.btn.primary { background:#FFD700; color:#001F3F; }
+.btn.ghost { background:transparent; color:#FFD700; border:1px solid rgba(255,215,0,0.08); }
+.progress { margin-top:10px; font-size:13px; color:rgba(255,215,0,0.95); }
+@media(max-width:420px){ .front,.back{ font-size:0.95rem; padding:14px } }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1 style="margin:0;color:#FFD700;">Priority Pub Quiz — 2025 Oct 30</h1>
+      <div class="meta">Palette B • 5 rounds × 10 questions • Witty & pop-culture infused</div>
+    </div>
+    <div class="meta">Daily pack</div>
+  </div>
 
+  <div id="roundLabel" style="max-width:760px;margin:8px auto;font-weight:800">Round: —</div>
+
+  <div class="flashcard" role="article" aria-live="polite">
+    <div class="card" id="card" tabindex="0" aria-pressed="false">
+      <div class="front">
+        <div class="tag" id="frontTag">Round</div>
+        <div id="questionText">Loading question…</div>
+      </div>
+      <div class="back">
+        <div class="tag" id="backTag">Answer</div>
+        <div id="answerText">Loading answer…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls" role="group">
+    <button class="btn ghost" id="prevBtn">◀ Prev</button>
+    <button class="btn primary" id="flipBtn">Flip</button>
+    <button class="btn ghost" id="nextBtn">Next ▶</button>
+  </div>
+
+  <div class="progress" id="progress">0 / 0</div>
+  <div style="max-width:760px;margin:10px auto;color:rgba(255,215,0,0.85);font-size:12px">Tap card to flip. Use ← → keys or swipe on mobile.</div>
+
+<script>
+const flashcards = [
+  // Current World Events
+  { round:"Current World Events", q:"Which European capital hosted a 'Night of Shadows' energy-saving event by dimming landmarks for climate awareness?", a:"Berlin" },
+  { round:"Current World Events", q:"Which nation launched a biodiversity credit market dubbed 'Green Gold' in 2025?", a:"Costa Rica" },
+  { round:"Current World Events", q:"Which Asian country announced a nationwide ban on deep-sea mining in 2025?", a:"Japan" },
+  { round:"Current World Events", q:"Which African nation introduced the world’s first solar-powered crematoriums?", a:"South Africa" },
+  { round:"Current World Events", q:"Which tech company unveiled AI that detects emotion in voice calls, sparking ethics debates?", a:"Google" },
+  { round:"Current World Events", q:"Which country’s 2025 Halloween parade broke the record for largest zombie gathering?", a:"Mexico" },
+  { round:"Current World Events", q:"Which global body declared 2025 the 'Year of the Bat' for wildlife preservation?", a:"UNEP (United Nations Environment Programme)" },
+  { round:"Current World Events", q:"Which city began using bioluminescent algae for public lighting trials?", a:"Amsterdam" },
+  { round:"Current World Events", q:"Which island nation reopened its Dracula-themed tourist route in Transylvania?", a:"Romania" },
+  { round:"Current World Events", q:"Which North American country launched a national 'Dark Sky Parks' initiative to reduce light pollution?", a:"Canada" },
+
+  // Pop Culture (1960s–2020s)
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1993 cult film features three witch sisters resurrected on Halloween?", a:"Hocus Pocus" },
+  { round:"Pop Culture (1960s–2020s)", q:"Who directed the gothic fairy tale 'Edward Scissorhands'?", a:"Tim Burton" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which Netflix series reimagined Wednesday Addams as a teen sleuth?", a:"Wednesday" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1978 horror film introduced masked killer Michael Myers?", a:"Halloween" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 2017 film by Jordan Peele turned the phrase 'Get Out' into a cultural landmark?", a:"Get Out" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which band’s 1979 anthem 'Don’t Stop Me Now' resurged thanks to zombie comedies?", a:"Queen" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which animated 1993 musical features the Pumpkin King of Halloween Town?", a:"The Nightmare Before Christmas" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1984 comedy warned us 'don’t cross the streams'?", a:"Ghostbusters" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which actress played the original 'scream queen' Laurie Strode?", a:"Jamie Lee Curtis" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 2020s series revived Bram Stoker’s Dracula for the BBC?", a:"Dracula (2020 miniseries)" },
+
+  // Music Research Round
+  { round:"Music Research Round", q:"Which heavy-metal band released 'Number of the Beast'?", a:"Iron Maiden" },
+  { round:"Music Research Round", q:"Which composer wrote the chilling 'Danse Macabre'?", a:"Camille Saint-Saëns" },
+  { round:"Music Research Round", q:"Which pop star’s 1982 music video became the gold standard for Halloween?", a:"Michael Jackson’s 'Thriller'" },
+  { round:"Music Research Round", q:"Which classical piece by Mussorgsky depicts a witches’ sabbath?", a:"Night on Bald Mountain" },
+  { round:"Music Research Round", q:"Which singer released the spooky hit 'Disturbia'?", a:"Rihanna" },
+  { round:"Music Research Round", q:"Which composer’s 'Toccata and Fugue in D minor' is synonymous with haunted organs?", a:"J.S. Bach" },
+  { round:"Music Research Round", q:"Which 1990s rock band sang 'Black Hole Sun'?", a:"Soundgarden" },
+  { round:"Music Research Round", q:"Which folk tune warns of a bride buried alive and inspired gothic ballads?", a:"'The Unquiet Grave'" },
+  { round:"Music Research Round", q:"Which band’s frontman styled himself as a modern horror icon in the 1990s?", a:"Marilyn Manson" },
+  { round:"Music Research Round", q:"Which movie theme by John Carpenter is one of the simplest yet scariest in film history?", a:"Halloween Theme" },
+
+  // Jeopardy!-Style
+  { round:"Jeopardy!-Style", q:"Category: Literature — This Irish author created Count Dracula in 1897.", a:"Who is Bram Stoker?" },
+  { round:"Jeopardy!-Style", q:"Category: Science — This gas gives pumpkins their orange hue.", a:"What is beta-carotene?" },
+  { round:"Jeopardy!-Style", q:"Category: Mythology — The Egyptian god of mummification.", a:"Who is Anubis?" },
+  { round:"Jeopardy!-Style", q:"Category: Film — The motel owner in Hitchcock’s 'Psycho'.", a:"Who is Norman Bates?" },
+  { round:"Jeopardy!-Style", q:"Category: Art — This painter created 'The Scream'.", a:"Who is Edvard Munch?" },
+  { round:"Jeopardy!-Style", q:"Category: History — The Salem witch trials occurred in this century.", a:"What is the 17th century?" },
+  { round:"Jeopardy!-Style", q:"Category: Biology — This nocturnal mammal inspired the vampire myth.", a:"What is the bat?" },
+  { round:"Jeopardy!-Style", q:"Category: Pop Culture — The name of Harry Potter’s pet owl.", a:"What is Hedwig?" },
+  { round:"Jeopardy!-Style", q:"Category: Geography — This Romanian region is famed for Dracula legends.", a:"What is Transylvania?" },
+  { round:"Jeopardy!-Style", q:"Category: Language — This word means 'fear of Friday the 13th'.", a:"What is paraskevidekatriaphobia?" },
+
+  // Special Round: The Macabre & the Mysterious
+  { round:"The Macabre & the Mysterious", q:"Which author wrote 'The Tell-Tale Heart'?", a:"Edgar Allan Poe" },
+  { round:"The Macabre & the Mysterious", q:"Which planet is named after the Roman god of the underworld?", a:"Pluto" },
+  { round:"The Macabre & the Mysterious", q:"What do you call a group of crows?", a:"A murder" },
+  { round:"The Macabre & the Mysterious", q:"Which 17th-century event in England led to the phrase 'ring around the rosie'?", a:"The Great Plague" },
+  { round:"The Macabre & the Mysterious", q:"Which castle is associated with Vlad the Impaler?", a:"Bran Castle" },
+  { round:"The Macabre & the Mysterious", q:"Which scientist’s grave is famously haunted by his own skull rumor?", a:"René Descartes" },
+  { round:"The Macabre & the Mysterious", q:"What creature in folklore is repelled by silver bullets?", a:"Werewolf" },
+  { round:"The Macabre & the Mysterious", q:"Which element’s symbol is 'Fe' and was once used in blood-letting tools?", a:"Iron" },
+  { round:"The Macabre & the Mysterious", q:"Which French cemetery is home to Jim Morrison and Oscar Wilde?", a:"Père Lachaise Cemetery" },
+  { round:"The Macabre & the Mysterious", q:"Which medieval torture device was nicknamed 'the Pear of Anguish'?", a:"An iron gag used for punishment" }
+
+];
+
+let currentIndex = 0;
+const card = document.getElementById('card');
+const questionText = document.getElementById('questionText');
+const answerText = document.getElementById('answerText');
+const frontTag = document.getElementById('frontTag');
+const backTag = document.getElementById('backTag');
+const roundLabel = document.getElementById('roundLabel');
+const progress = document.getElementById('progress');
+
+function render(i){
+  const it = flashcards[i];
+  frontTag.textContent = it.round;
+  backTag.textContent = it.round + " — Answer";
+  questionText.textContent = it.q;
+  answerText.textContent = it.a;
+  roundLabel.textContent = 'Round: ' + it.round;
+  progress.textContent = (i+1) + ' / ' + flashcards.length;
+  card.classList.remove('flipped');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function flip(){ card.classList.toggle('flipped'); }
+document.getElementById('flipBtn').addEventListener('click', flip);
+document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex+1)%flashcards.length; render(currentIndex); });
+document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex-1+flashcards.length)%flashcards.length; render(currentIndex); });
+card.addEventListener('click', flip);
+
+document.addEventListener('keydown',(e)=>{ 
+  if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+  if(e.key===' '||e.key==='Spacebar'){ e.preventDefault(); flip(); }
+});
+
+let sx=null;
+document.addEventListener('touchstart',e=>sx=e.changedTouches[0].screenX);
+document.addEventListener('touchend',e=>{ if(sx===null) return; const dx=e.changedTouches[0].screenX-sx; if(dx>60) document.getElementById('prevBtn').click(); if(dx<-60) document.getElementById('nextBtn').click(); sx=null; });
+
+render(0);
+</script>
+</body>
+</html>

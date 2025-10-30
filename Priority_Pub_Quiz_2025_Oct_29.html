@@ -1,1 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Priority Pub Quiz — 2025 Oct 29</title>
+<style>
+body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
+.header { display:flex; justify-content:space-between; align-items:center; max-width:920px; margin:0 auto 8px; }
+.header .meta { font-size:13px; opacity:0.9; color:rgba(255,215,0,0.95) }
+.flashcard { width:90%; max-width:760px; height:340px; margin:16px auto; perspective:1100px; }
+.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.58s; cursor:pointer; }
+.card.flipped { transform:rotateY(180deg); }
+.front,.back { position:absolute; inset:0; padding:20px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35); display:flex; flex-direction:column; justify-content:center; align-items:flex-start; backface-visibility:hidden; text-align:left; font-size:1.03rem; line-height:1.35; }
+.front { background:#083055; color:#FFD700; }
+.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
+.tag { display:inline-block; background:rgba(255,215,0,0.08); color:var(--gold,#FFD700); padding:6px 10px; border-radius:999px; font-weight:700; margin-bottom:12px; }
+.controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+.btn { padding:10px 14px; border-radius:10px; border:0; font-weight:700; cursor:pointer; }
+.btn.primary { background:#FFD700; color:#001F3F; }
+.btn.ghost { background:transparent; color:#FFD700; border:1px solid rgba(255,215,0,0.08); }
+.progress { margin-top:10px; font-size:13px; color:rgba(255,215,0,0.95); }
+@media(max-width:420px){ .front,.back{ font-size:0.95rem; padding:14px } }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1 style="margin:0;color:#FFD700;">Priority Pub Quiz — 2025 Oct 29</h1>
+      <div class="meta">Palette B • 5 rounds × 10 questions • Witty & pop-culture infused</div>
+    </div>
+    <div class="meta">Daily pack</div>
+  </div>
 
+  <div id="roundLabel" style="max-width:760px;margin:8px auto;font-weight:800">Round: —</div>
+
+  <div class="flashcard" role="article" aria-live="polite">
+    <div class="card" id="card" tabindex="0" aria-pressed="false">
+      <div class="front">
+        <div class="tag" id="frontTag">Round</div>
+        <div id="questionText">Loading question…</div>
+      </div>
+      <div class="back">
+        <div class="tag" id="backTag">Answer</div>
+        <div id="answerText">Loading answer…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls" role="group">
+    <button class="btn ghost" id="prevBtn">◀ Prev</button>
+    <button class="btn primary" id="flipBtn">Flip</button>
+    <button class="btn ghost" id="nextBtn">Next ▶</button>
+  </div>
+
+  <div class="progress" id="progress">0 / 0</div>
+  <div style="max-width:760px;margin:10px auto;color:rgba(255,215,0,0.85);font-size:12px">Tap card to flip. Use ← → keys or swipe on mobile.</div>
+
+<script>
+const flashcards = [
+  // Current World Events
+  { round:"Current World Events", q:"Which country introduced the first universal basic income for artists in 2025?", a:"Ireland" },
+  { round:"Current World Events", q:"Which Asian country tested a commercial maglev train exceeding 600 km/h?", a:"China" },
+  { round:"Current World Events", q:"Which nation hosted the 2025 UN Climate Resilience Forum?", a:"Singapore" },
+  { round:"Current World Events", q:"Which major city in North America banned gas-powered lawn equipment in 2025?", a:"Toronto" },
+  { round:"Current World Events", q:"Which space agency launched the 'Enceladus Life Finder' mission in 2025?", a:"NASA" },
+  { round:"Current World Events", q:"Which country’s parliament became the first to operate partly through the metaverse?", a:"South Korea" },
+  { round:"Current World Events", q:"Which African country achieved internet access in 100% of schools in 2025?", a:"Rwanda" },
+  { round:"Current World Events", q:"Which world leader announced a 'Plastic Neutral Nation' initiative in 2025?", a:"New Zealand" },
+  { round:"Current World Events", q:"Which international court ruled on AI-generated art copyright in 2025?", a:"European Court of Justice" },
+  { round:"Current World Events", q:"Which Scandinavian country declared 'Loneliness' a public health crisis in 2025?", a:"Sweden" },
+
+  // Pop Culture (1960s–2020s)
+  { round:"Pop Culture (1960s–2020s)", q:"Which 2023 film brought back Michael Keaton as Batman?", a:"The Flash" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which author wrote 'A Game of Thrones'?", a:"George R.R. Martin" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1970s musical featured the song 'Aquarius'?", a:"Hair" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which director is known for the symmetrical style seen in 'The Grand Budapest Hotel'?", a:"Wes Anderson" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which pop star coined the term 'Little Monsters' for their fans?", a:"Lady Gaga" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1999 film explored simulated reality and philosophy?", a:"The Matrix" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which iconic 1980s film features the line 'Nobody puts Baby in a corner'?", a:"Dirty Dancing" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 2024 Broadway revival brought Sondheim’s 'Merrily We Roll Along' back to the spotlight?", a:"Merrily We Roll Along" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1970s TV host popularized 'Live from New York, it’s Saturday night!'?", a:"Chevy Chase" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which director’s 'Barbie' became the highest-grossing film by a woman in 2023?", a:"Greta Gerwig" },
+
+  // Music Research Round
+  { round:"Music Research Round", q:"Which composer wrote the 'Moonlight Sonata'?", a:"Ludwig van Beethoven" },
+  { round:"Music Research Round", q:"Which 1990s hip-hop duo recorded 'Ms. Jackson'?", a:"OutKast" },
+  { round:"Music Research Round", q:"Which 2020s artist collaborated with Jack Antonoff and Phoebe Bridgers on 'The Tortured Poets Department'?", a:"Taylor Swift" },
+  { round:"Music Research Round", q:"Which 18th-century composer became deaf yet continued composing masterpieces?", a:"Beethoven" },
+  { round:"Music Research Round", q:"Which 1970s song contains the line 'You can check out any time you like, but you can never leave'?", a:"'Hotel California' by The Eagles" },
+  { round:"Music Research Round", q:"Which musician released the 1973 album 'Dark Side of the Moon'?", a:"Pink Floyd" },
+  { round:"Music Research Round", q:"Which genre fuses jazz improvisation with hip-hop beats?", a:"Jazz rap" },
+  { round:"Music Research Round", q:"Which Baroque composer was court musician to King George I of England?", a:"George Frideric Handel" },
+  { round:"Music Research Round", q:"Which artist’s real name is Abel Tesfaye?", a:"The Weeknd" },
+  { round:"Music Research Round", q:"Which 20th-century American composer created 'Appalachian Spring'?", a:"Aaron Copland" },
+
+  // Jeopardy!-Style
+  { round:"Jeopardy!-Style", q:"Category: Language — This is the only word that rhymes with 'month'.", a:"What is 'none' (trick question — there is none)?" },
+  { round:"Jeopardy!-Style", q:"Category: Philosophy — He declared 'God is dead.'", a:"Who is Friedrich Nietzsche?" },
+  { round:"Jeopardy!-Style", q:"Category: Geography — This is the world’s highest capital city.", a:"What is La Paz, Bolivia?" },
+  { round:"Jeopardy!-Style", q:"Category: Literature — This Russian author wrote 'The Brothers Karamazov.'", a:"Who is Fyodor Dostoevsky?" },
+  { round:"Jeopardy!-Style", q:"Category: History — The last pharaoh of ancient Egypt.", a:"Who is Cleopatra?" },
+  { round:"Jeopardy!-Style", q:"Category: Science — The hardest naturally occurring mineral.", a:"What is diamond?" },
+  { round:"Jeopardy!-Style", q:"Category: Wordplay — This is an anagram of 'LISTEN'.", a:"What is 'SILENT'?" },
+  { round:"Jeopardy!-Style", q:"Category: Religion — The Four Noble Truths belong to this religion.", a:"What is Buddhism?" },
+  { round:"Jeopardy!-Style", q:"Category: Art — 'Starry Night' was painted while the artist was in an asylum.", a:"Who is Vincent van Gogh?" },
+  { round:"Jeopardy!-Style", q:"Category: Math — This number is known as the 'Golden Ratio.'", a:"What is φ (phi, ~1.618)?" },
+
+  // Special Round: Riddles, Logic & Language
+  { round:"Riddles, Logic & Language", q:"I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?", a:"An echo" },
+  { round:"Riddles, Logic & Language", q:"Forward I’m heavy, backward I’m not. What am I?", a:"The word 'ton'" },
+  { round:"Riddles, Logic & Language", q:"What comes once in a minute, twice in a moment, but never in a thousand years?", a:"The letter 'M'" },
+  { round:"Riddles, Logic & Language", q:"What word becomes shorter when you add two letters to it?", a:"'Short'" },
+  { round:"Riddles, Logic & Language", q:"What has keys but can’t open locks?", a:"A piano" },
+  { round:"Riddles, Logic & Language", q:"If two’s company and three’s a crowd, what are four and five?", a:"Nine" },
+  { round:"Riddles, Logic & Language", q:"What begins with an E, ends with an E, but only contains one letter?", a:"An envelope" },
+  { round:"Riddles, Logic & Language", q:"What disappears as soon as you say its name?", a:"Silence" },
+  { round:"Riddles, Logic & Language", q:"Which English word retains its pronunciation even after removing four of its five letters: queue, queen, or quote?", a:"Queue" },
+  { round:"Riddles, Logic & Language", q:"What common word changes meaning when capitalized?", a:"'Polish' (as in from Poland / to shine)" }
+];
+
+let currentIndex = 0;
+const card = document.getElementById('card');
+const questionText = document.getElementById('questionText');
+const answerText = document.getElementById('answerText');
+const frontTag = document.getElementById('frontTag');
+const backTag = document.getElementById('backTag');
+const roundLabel = document.getElementById('roundLabel');
+const progress = document.getElementById('progress');
+
+function render(i){
+  const it = flashcards[i];
+  frontTag.textContent = it.round;
+  backTag.textContent = it.round + " — Answer";
+  questionText.textContent = it.q;
+  answerText.textContent = it.a;
+  roundLabel.textContent = 'Round: ' + it.round;
+  progress.textContent = (i+1) + ' / ' + flashcards.length;
+  card.classList.remove('flipped');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function flip(){ card.classList.toggle('flipped'); }
+document.getElementById('flipBtn').addEventListener('click', flip);
+document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex+1)%flashcards.length; render(currentIndex); });
+document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex-1+flashcards.length)%flashcards.length; render(currentIndex); });
+card.addEventListener('click', flip);
+
+document.addEventListener('keydown',(e)=>{ 
+  if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+  if(e.key===' '||e.key==='Spacebar'){ e.preventDefault(); flip(); }
+});
+
+let sx=null;
+document.addEventListener('touchstart',e=>sx=e.changedTouches[0].screenX);
+document.addEventListener('touchend',e=>{ if(sx===null) return; const dx=e.changedTouches[0].screenX-sx; if(dx>60) document.getElementById('prevBtn').click(); if(dx<-60) document.getElementById('nextBtn').click(); sx=null; });
+
+render(0);
+</script>
+</body>
+</html>

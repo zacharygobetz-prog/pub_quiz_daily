@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Priority Pub Quiz — 2025 Nov 04</title>
+<style>
+body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
+.header { display:flex; justify-content:space-between; align-items:center; max-width:920px; margin:0 auto 8px; }
+.header .meta { font-size:13px; opacity:0.9; color:rgba(255,215,0,0.95) }
+.flashcard { width:90%; max-width:760px; height:340px; margin:16px auto; perspective:1100px; }
+.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.58s; cursor:pointer; }
+.card.flipped { transform:rotateY(180deg); }
+.front,.back { position:absolute; inset:0; padding:20px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35); display:flex; flex-direction:column; justify-content:center; align-items:flex-start; backface-visibility:hidden; text-align:left; font-size:1.03rem; line-height:1.35; }
+.front { background:#083055; color:#FFD700; }
+.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
+.tag { display:inline-block; background:rgba(255,215,0,0.08); color:var(--gold,#FFD700); padding:6px 10px; border-radius:999px; font-weight:700; margin-bottom:12px; }
+.controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+.btn { padding:10px 14px; border-radius:10px; border:0; font-weight:700; cursor:pointer; }
+.btn.primary { background:#FFD700; color:#001F3F; }
+.btn.ghost { background:transparent; color:#FFD700; border:1px solid rgba(255,215,0,0.08); }
+.progress { margin-top:10px; font-size:13px; color:rgba(255,215,0,0.95); }
+@media(max-width:420px){ .front,.back{ font-size:0.95rem; padding:14px } }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1 style="margin:0;color:#FFD700;">Priority Pub Quiz — 2025 Nov 04</h1>
+      <div class="meta">Palette B • 5 rounds × 10 questions • Witty & pop-culture infused</div>
+    </div>
+    <div class="meta">Daily pack</div>
+  </div>
+
+  <div id="roundLabel" style="max-width:760px;margin:8px auto;font-weight:800">Round: —</div>
+
+  <div class="flashcard" role="article" aria-live="polite">
+    <div class="card" id="card" tabindex="0" aria-pressed="false">
+      <div class="front">
+        <div class="tag" id="frontTag">Round</div>
+        <div id="questionText">Loading question…</div>
+      </div>
+      <div class="back">
+        <div class="tag" id="backTag">Answer</div>
+        <div id="answerText">Loading answer…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls" role="group">
+    <button class="btn ghost" id="prevBtn">◀ Prev</button>
+    <button class="btn primary" id="flipBtn">Flip</button>
+    <button class="btn ghost" id="nextBtn">Next ▶</button>
+  </div>
+
+  <div class="progress" id="progress">0 / 0</div>
+  <div style="max-width:760px;margin:10px auto;color:rgba(255,215,0,0.85);font-size:12px">Tap card to flip. Use ← → keys or swipe on mobile.</div>
+
+<script>
+const flashcards = [
+  // Current World Events
+  { round: "Current World Events", q: "Which nation announced a ban on deep-sea mining in 2025 to protect ocean biodiversity?", a: "New Zealand" },
+  { round: "Current World Events", q: "Which world leader made headlines for livestreaming their resignation on social media?", a: "El Salvador’s President Nayib Bukele" },
+  { round: "Current World Events", q: "Which tech company launched the world’s first fully AI-operated newsroom in 2025?", a: "Reuters" },
+  { round: "Current World Events", q: "Which European capital implemented a 'quiet hours' law banning car horns from 10PM to 7AM?", a: "Paris, France" },
+  { round: "Current World Events", q: "Which country began taxing carbon emissions directly at the consumer level in 2025?", a: "Sweden" },
+  { round: "Current World Events", q: "Which African city hosted the 2025 UN Climate Resilience Summit?", a: "Nairobi, Kenya" },
+  { round: "Current World Events", q: "Which major airline announced a fleet conversion to hydrogen-powered aircraft by 2030?", a: "Lufthansa" },
+  { round: "Current World Events", q: "Which 2025 Mars mission successfully deployed a greenhouse experiment?", a: "NASA’s Mars Bloom Initiative" },
+  { round: "Current World Events", q: "Which country reintroduced wolves into its mountain ranges to restore ecological balance?", a: "Spain" },
+  { round: "Current World Events", q: "Which global body adopted the 2025 Digital Ethics Accord?", a: "United Nations" },
+
+  // Pop Culture (1960s–2020s)
+  { round: "Pop Culture (1960s–2020s)", q: "Which 2020s artist became the first to sell an album as an NFT collection?", a: "Grimes" },
+  { round: "Pop Culture (1960s–2020s)", q: "Which film rebooted the 1980s classic 'Beetlejuice' in 2024?", a: "Beetlejuice Beetlejuice" },
+  { round: "Pop Culture (1960s–2020s)", q: "Which 1977 sci-fi film featured the phrase 'May the Force be with you'?", a: "Star Wars: A New Hope" },
+  { round: "Pop Culture (1960s–2020s)", q: "Which actor plays Deadpool in the Marvel Cinematic Universe?", a: "Ryan Reynolds" },
+  { round: "Pop Culture (1960s–2020s)", q: "Which pop legend made headlines for performing a hologram tour in 2025?", a: "Madonna" },
+  { round: "Pop Culture (1960s–2020s)", q: "Which 1990s video game featured characters like Sub-Zero and Scorpion?", a: "Mortal Kombat" },
+  { round: "Pop Culture (1960s–2020s)", q: "Which 2023 TV series became the most-watched adaptation of a video game?", a: "The Last of Us" },
+  { round: "Pop Culture (1960s–2020s)", q: "Which 1970s band inspired the 2024 film 'Daisy Jones & The Six'?", a: "Fleetwood Mac" },
+  { round: "Pop Culture (1960s–2020s)", q: "Which 1984 song featured the line 'It’s hip to be square'?", a: "Huey Lewis and the News – Hip to Be Square" },
+  { round: "Pop Culture (1960s–2020s)", q: "Which comedian hosted SNL’s 50th Anniversary Special in 2025?", a: "Tina Fey" },
+
+  // Music Research Round
+  { round: "Music Research Round", q: "Which jazz legend was nicknamed 'The Bird'?", a: "Charlie Parker" },
+  { round: "Music Research Round", q: "Which 2020s artist collaborated with Elton John on 'Cold Heart'?", a: "Dua Lipa" },
+  { round: "Music Research Round", q: "Which 1969 event became the defining music festival of a generation?", a: "Woodstock" },
+  { round: "Music Research Round", q: "Which song by Queen features the lyric 'Is this the real life? Is this just fantasy?'", a: "Bohemian Rhapsody" },
+  { round: "Music Research Round", q: "Which 2024 Grammy-winning artist is known for blending country and trap music?", a: "Lil Nas X" },
+  { round: "Music Research Round", q: "Which Beatles album cover features a crosswalk?", a: "Abbey Road" },
+  { round: "Music Research Round", q: "Which 1990s song by Oasis became a Britpop anthem?", a: "Wonderwall" },
+  { round: "Music Research Round", q: "Which 2020s trend revived cassette tapes among indie bands?", a: "Analog Nostalgia Movement" },
+  { round: "Music Research Round", q: "Which electronic artist is known for the album 'Random Access Memories'?", a: "Daft Punk" },
+  { round: "Music Research Round", q: "Which 2023 collaboration reunited Taylor Swift and Bon Iver?", a: "Exile (Live Revival Version)" },
+
+  // Jeopardy!-Style
+  { round: "Jeopardy!-Style", q: "Category: Geography — This city is known as 'The Eternal City.'", a: "What is Rome?" },
+  { round: "Jeopardy!-Style", q: "Category: Science — This element has the chemical symbol 'Fe.'", a: "What is iron?" },
+  { round: "Jeopardy!-Style", q: "Category: Literature — This author wrote 'The Handmaid’s Tale.'", a: "Who is Margaret Atwood?" },
+  { round: "Jeopardy!-Style", q: "Category: Sports — This athlete won eight gold medals at the 2008 Olympics.", a: "Who is Michael Phelps?" },
+  { round: "Jeopardy!-Style", q: "Category: Film — This director created 'Inception' and 'Oppenheimer.'", a: "Who is Christopher Nolan?" },
+  { round: "Jeopardy!-Style", q: "Category: Mythology — This Norse god wields a hammer named Mjölnir.", a: "Who is Thor?" },
+  { round: "Jeopardy!-Style", q: "Category: Food — This ingredient makes bread rise.", a: "What is yeast?" },
+  { round: "Jeopardy!-Style", q: "Category: Technology — This company created the 'Vision Pro' headset.", a: "What is Apple?" },
+  { round: "Jeopardy!-Style", q: "Category: History — The Berlin Wall fell in this year.", a: "What is 1989?" },
+  { round: "Jeopardy!-Style", q: "Category: Art — 'The Persistence of Memory' features melting clocks.", a: "Who is Salvador Dalí?" },
+
+  // Special Round: Modern Minds & Memes
+  { round: "Modern Minds & Memes", q: "Which 2020s meme phrase means 'I am emotionally destroyed, yet functioning'?", a: "I am literally me" },
+  { round: "Modern Minds & Memes", q: "Which social platform rebranded as 'X' in 2023?", a: "Twitter" },
+  { round: "Modern Minds & Memes", q: "Which viral term describes an influencer’s self-reinvention every few months?", a: "Rebranding arc" },
+  { round: "Modern Minds & Memes", q: "Which AI chatbot was declared 'Time’s Tool of the Year' in 2024?", a: "ChatGPT" },
+  { round: "Modern Minds & Memes", q: "Which 2020s meme animal became the symbol of quiet quitting?", a: "Capybara" },
+  { round: "Modern Minds & Memes", q: "Which pop star’s 2024 tour sparked an entire travel economy?", a: "Taylor Swift" },
+  { round: "Modern Minds & Memes", q: "Which emoji combination signifies 'chaotic but thriving' energy?", a: "💅🔥" },
+  { round: "Modern Minds & Memes", q: "Which 2025 viral phrase came from the 'cozy apocalypse' TikTok trend?", a: "Soft survival" },
+  { round: "Modern Minds & Memes", q: "Which 2020s meme described staying home with snacks instead of clubbing?", a: "Goblin mode" },
+  { round: "Modern Minds & Memes", q: "Which 2025 global campaign used the tagline 'Log Off, Look Up'?", a: "UNESCO’s Digital Wellness Initiative" }
+
+];
+
+let currentIndex = 0;
+const card = document.getElementById('card');
+const questionText = document.getElementById('questionText');
+const answerText = document.getElementById('answerText');
+const frontTag = document.getElementById('frontTag');
+const backTag = document.getElementById('backTag');
+const roundLabel = document.getElementById('roundLabel');
+const progress = document.getElementById('progress');
+
+function render(i){
+  const it = flashcards[i];
+  frontTag.textContent = it.round;
+  backTag.textContent = it.round + " — Answer";
+  questionText.textContent = it.q;
+  answerText.textContent = it.a;
+  roundLabel.textContent = 'Round: ' + it.round;
+  progress.textContent = (i+1) + ' / ' + flashcards.length;
+  card.classList.remove('flipped');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function flip(){ card.classList.toggle('flipped'); }
+document.getElementById('flipBtn').addEventListener('click', flip);
+document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex+1)%flashcards.length; render(currentIndex); });
+document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex-1+flashcards.length)%flashcards.length; render(currentIndex); });
+card.addEventListener('click', flip);
+
+document.addEventListener('keydown',(e)=>{ 
+  if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+  if(e.key===' '||e.key==='Spacebar'){ e.preventDefault(); flip(); }
+});
+
+let sx=null;
+document.addEventListener('touchstart',e=>sx=e.changedTouches[0].screenX);
+document.addEventListener('touchend',e=>{ if(sx===null) return; const dx=e.changedTouches[0].screenX-sx; if(dx>60) document.getElementById('prevBtn').click(); if(dx<-60) document.getElementById('nextBtn').click(); sx=null; });
+
+render(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Priority Pub Quiz — 2025 Oct 31</title>
+<style>
+body { background:#001F3F; color:#FFD700; font-family:Arial, sans-serif; text-align:center; padding:18px; }
+.header { display:flex; justify-content:space-between; align-items:center; max-width:920px; margin:0 auto 8px; }
+.header .meta { font-size:13px; opacity:0.9; color:rgba(255,215,0,0.95) }
+.flashcard { width:90%; max-width:760px; height:340px; margin:16px auto; perspective:1100px; }
+.card { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.58s; cursor:pointer; }
+.card.flipped { transform:rotateY(180deg); }
+.front,.back { position:absolute; inset:0; padding:20px; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35); display:flex; flex-direction:column; justify-content:center; align-items:flex-start; backface-visibility:hidden; text-align:left; font-size:1.03rem; line-height:1.35; }
+.front { background:#083055; color:#FFD700; }
+.back { background:#FFD700; color:#001F3F; transform:rotateY(180deg); }
+.tag { display:inline-block; background:rgba(255,215,0,0.08); color:var(--gold,#FFD700); padding:6px 10px; border-radius:999px; font-weight:700; margin-bottom:12px; }
+.controls { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+.btn { padding:10px 14px; border-radius:10px; border:0; font-weight:700; cursor:pointer; }
+.btn.primary { background:#FFD700; color:#001F3F; }
+.btn.ghost { background:transparent; color:#FFD700; border:1px solid rgba(255,215,0,0.08); }
+.progress { margin-top:10px; font-size:13px; color:rgba(255,215,0,0.95); }
+@media(max-width:420px){ .front,.back{ font-size:0.95rem; padding:14px } }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1 style="margin:0;color:#FFD700;">Priority Pub Quiz — 2025 Oct 31</h1>
+      <div class="meta">Palette B • 5 rounds × 10 questions • Witty & pop-culture infused</div>
+    </div>
+    <div class="meta">Daily pack</div>
+  </div>
+
+  <div id="roundLabel" style="max-width:760px;margin:8px auto;font-weight:800">Round: —</div>
+
+  <div class="flashcard" role="article" aria-live="polite">
+    <div class="card" id="card" tabindex="0" aria-pressed="false">
+      <div class="front">
+        <div class="tag" id="frontTag">Round</div>
+        <div id="questionText">Loading question…</div>
+      </div>
+      <div class="back">
+        <div class="tag" id="backTag">Answer</div>
+        <div id="answerText">Loading answer…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls" role="group">
+    <button class="btn ghost" id="prevBtn">◀ Prev</button>
+    <button class="btn primary" id="flipBtn">Flip</button>
+    <button class="btn ghost" id="nextBtn">Next ▶</button>
+  </div>
+
+  <div class="progress" id="progress">0 / 0</div>
+  <div style="max-width:760px;margin:10px auto;color:rgba(255,215,0,0.85);font-size:12px">Tap card to flip. Use ← → keys or swipe on mobile.</div>
+
+<script>
+const flashcards = [
+  // Current World Events
+  { round:"Current World Events", q:"Which European country elected its first openly gay prime minister in 2025?", a:"Poland" },
+  { round:"Current World Events", q:"Which country launched the world’s first nationwide plastic credit system in 2025?", a:"Chile" },
+  { round:"Current World Events", q:"Which Asian nation officially replaced paper currency with a digital version in 2025?", a:"China" },
+  { round:"Current World Events", q:"Which country hosted the 2025 World Science Forum on renewable energy?", a:"Germany" },
+  { round:"Current World Events", q:"Which African nation announced its first female chief of defense forces in 2025?", a:"Kenya" },
+  { round:"Current World Events", q:"Which Middle Eastern country legalized independent media for the first time in 2025?", a:"Saudi Arabia" },
+  { round:"Current World Events", q:"Which nation rolled out a program offering free public transit to all citizens?", a:"Luxembourg" },
+  { round:"Current World Events", q:"Which country topped the UN’s 2025 Global Happiness Index?", a:"Finland" },
+  { round:"Current World Events", q:"Which North American city launched the first 'night shift schools' for adults?", a:"Toronto" },
+  { round:"Current World Events", q:"Which island nation announced a plan to relocate its capital due to sea-level rise?", a:"Maldives" },
+
+  // Pop Culture (1960s–2020s)
+  { round:"Pop Culture (1960s–2020s)", q:"Which singer starred as Ally in 'A Star Is Born'?", a:"Lady Gaga" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 2024 Netflix series reimagined Cleopatra as a documentary heroine?", a:"Queen Cleopatra" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1990s sitcom centered around six friends living in New York City?", a:"Friends" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which cult 2000s film popularized the phrase 'You can’t sit with us'?", a:"Mean Girls" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which musician performed at both the 2020 and 2025 Super Bowl halftime shows?", a:"Rihanna" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 2020s film featured Margot Robbie as a sentient doll?", a:"Barbie" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which TV series featured a character known as 'The Mother of Dragons'?", a:"Game of Thrones" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which fashion icon became the first male solo cover star of Vogue?", a:"Harry Styles" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which 1980s song begins with 'It’s close to midnight and something evil’s lurking in the dark'?", a:"Thriller by Michael Jackson" },
+  { round:"Pop Culture (1960s–2020s)", q:"Which Oscar-winning 2024 film explored the intersection of art and artificial intelligence?", a:"Anora" },
+
+  // Music Research Round
+  { round:"Music Research Round", q:"Which British band released 'The Dark Side of the Moon'?", a:"Pink Floyd" },
+  { round:"Music Research Round", q:"Which American artist wrote 'Born This Way'?", a:"Lady Gaga" },
+  { round:"Music Research Round", q:"Which 1970s artist was known as the 'Rocket Man'?", a:"Elton John" },
+  { round:"Music Research Round", q:"Which 2020s artist collaborated with Madonna and The Weeknd on 'Popular'?", a:"Playboi Carti" },
+  { round:"Music Research Round", q:"Which classical composer wrote 'Clair de Lune'?", a:"Claude Debussy" },
+  { round:"Music Research Round", q:"Which pop star came out as nonbinary in 2021?", a:"Demi Lovato" },
+  { round:"Music Research Round", q:"Which jazz singer famously performed at Carnegie Hall in 1938?", a:"Billie Holiday" },
+  { round:"Music Research Round", q:"Which 2020s K-pop group became UN Goodwill Ambassadors?", a:"BTS" },
+  { round:"Music Research Round", q:"Which artist performed the protest song 'Strange Fruit'?", a:"Billie Holiday" },
+  { round:"Music Research Round", q:"Which rapper founded Roc Nation?", a:"Jay-Z" },
+
+  // Jeopardy!-Style
+  { round:"Jeopardy!-Style", q:"Category: Geography — This is the world’s largest island nation.", a:"What is Indonesia?" },
+  { round:"Jeopardy!-Style", q:"Category: History — The city where the Magna Carta was signed.", a:"What is Runnymede?" },
+  { round:"Jeopardy!-Style", q:"Category: Literature — The author of 'Beloved.'", a:"Who is Toni Morrison?" },
+  { round:"Jeopardy!-Style", q:"Category: Science — This is the most abundant element in the universe.", a:"What is hydrogen?" },
+  { round:"Jeopardy!-Style", q:"Category: Sports — The Olympic Games originated in this country.", a:"What is Greece?" },
+  { round:"Jeopardy!-Style", q:"Category: Film — This 2023 movie revived the horror of 'The Exorcist' franchise.", a:"What is The Exorcist: Believer?" },
+  { round:"Jeopardy!-Style", q:"Category: Mythology — The Greek goddess of love and beauty.", a:"Who is Aphrodite?" },
+  { round:"Jeopardy!-Style", q:"Category: Art — This Spanish artist’s 'Guernica' depicts the horrors of war.", a:"Who is Pablo Picasso?" },
+  { round:"Jeopardy!-Style", q:"Category: Food — This Italian dish translates to 'little tongues.'", a:"What is linguine?" },
+  { round:"Jeopardy!-Style", q:"Category: Language — The word 'emoji' originated from this language.", a:"What is Japanese?" },
+
+  // Special Round: LGBTQ+ History & Culture
+  { round:"LGBTQ+ History & Culture", q:"Who led the Stonewall Riots in 1969 alongside Sylvia Rivera?", a:"Marsha P. Johnson" },
+  { round:"LGBTQ+ History & Culture", q:"Which city hosted the first Pride march in 1970?", a:"New York City" },
+  { round:"LGBTQ+ History & Culture", q:"Which 2018 film depicted Freddie Mercury’s life?", a:"Bohemian Rhapsody" },
+  { round:"LGBTQ+ History & Culture", q:"Which British singer came out publicly in 1998?", a:"George Michael" },
+  { round:"LGBTQ+ History & Culture", q:"Which trans actress stars in the hit show 'Pose'?", a:"MJ Rodriguez" },
+  { round:"LGBTQ+ History & Culture", q:"Which European country legalized same-sex marriage first?", a:"The Netherlands (2001)" },
+  { round:"LGBTQ+ History & Culture", q:"Which 2020s artist wrote and performed 'MONTERO (Call Me By Your Name)'?", a:"Lil Nas X" },
+  { round:"LGBTQ+ History & Culture", q:"Which classic novel features the relationship of Dorian Gray and Basil Hallward?", a:"The Picture of Dorian Gray" },
+  { round:"LGBTQ+ History & Culture", q:"Which rainbow flag color represents healing?", a:"Orange" },
+  { round:"LGBTQ+ History & Culture", q:"Which country decriminalized homosexuality most recently in 2025?", a:"Mauritius" }
+
+];
+
+let currentIndex = 0;
+const card = document.getElementById('card');
+const questionText = document.getElementById('questionText');
+const answerText = document.getElementById('answerText');
+const frontTag = document.getElementById('frontTag');
+const backTag = document.getElementById('backTag');
+const roundLabel = document.getElementById('roundLabel');
+const progress = document.getElementById('progress');
+
+function render(i){
+  const it = flashcards[i];
+  frontTag.textContent = it.round;
+  backTag.textContent = it.round + " — Answer";
+  questionText.textContent = it.q;
+  answerText.textContent = it.a;
+  roundLabel.textContent = 'Round: ' + it.round;
+  progress.textContent = (i+1) + ' / ' + flashcards.length;
+  card.classList.remove('flipped');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function flip(){ card.classList.toggle('flipped'); }
+document.getElementById('flipBtn').addEventListener('click', flip);
+document.getElementById('nextBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex+1)%flashcards.length; render(currentIndex); });
+document.getElementById('prevBtn').addEventListener('click', ()=>{ currentIndex=(currentIndex-1+flashcards.length)%flashcards.length; render(currentIndex); });
+card.addEventListener('click', flip);
+
+document.addEventListener('keydown',(e)=>{ 
+  if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+  if(e.key===' '||e.key==='Spacebar'){ e.preventDefault(); flip(); }
+});
+
+let sx=null;
+document.addEventListener('touchstart',e=>sx=e.changedTouches[0].screenX);
+document.addEventListener('touchend',e=>{ if(sx===null) return; const dx=e.changedTouches[0].screenX-sx; if(dx>60) document.getElementById('prevBtn').click(); if(dx<-60) document.getElementById('nextBtn').click(); sx=null; });
+
+render(0);
+</script>
+</body>
+</html>
